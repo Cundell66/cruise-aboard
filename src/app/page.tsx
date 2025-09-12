@@ -15,9 +15,8 @@ async function getCruiseOffers(): Promise<CruiseOffer[]> {
   try {
     const response = await fetch(url, { 
       headers,
-      // Using 'no-cache' to ensure we always get the latest data.
-      // Consider 'revalidate' for production use if data doesn't change too frequently.
-      cache: 'no-cache' 
+      // Revalidate the data every hour (3600 seconds)
+      next: { revalidate: 3600 } 
     });
 
     if (!response.ok) {
