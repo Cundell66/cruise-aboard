@@ -27,7 +27,7 @@ async function getCruiseOffers(): Promise<CruiseOffer[]> {
 
     // Filter and Map the API response to the CruiseOffer interface
     return data.cruises
-      .filter((cruise: any) => cruise.cruise_only_price && parseFloat(cruise.cruise_only_price) > 0)
+      .filter((cruise: any) => cruise.starts_at === 'Southampton' && cruise.cruise_only_price && parseFloat(cruise.cruise_only_price) > 0)
       .map((cruise: any, index: number) => {
         const originalPrice = parseFloat(cruise.cruise_only_price);
         const discountedPrice = Math.round(originalPrice * 0.9);
