@@ -27,25 +27,24 @@ async function getCruiseOffers(): Promise<CruiseOffer[]> {
     const data = await response.json();
 
     // Map the API response to the CruiseOffer interface
-    // This mapping is based on a likely structure. If it's different, we'll need to adjust it.
     return data.cruises.map((cruise: any, index: number) => ({
-      id: cruise.id || index,
-      title: cruise.cruise_line.name,
-      date: new Date(cruise.sailings[0]?.start_date).toLocaleDateString('en-GB', { month: 'long', day: 'numeric', year: 'numeric' }) || 'Date TBC',
-      imageUrl: cruise.images[0]?.url || 'https://placehold.co/600x400',
+      id: cruise.vendor_id || index,
+      title: cruise.operator_title,
+      date: new Date(cruise.starts_on).toLocaleDateString('en-GB', { month: 'long', day: 'numeric', year: 'numeric' }) || 'Date TBC',
+      imageUrl: 'https://placehold.co/600x400', // API does not seem to provide images
       imageAlt: cruise.name,
       details: [
-        `${cruise.duration_nights} nights`,
+        `${cruise.cruise_nights} nights`,
         cruise.name,
-        `From: <strong>£${cruise.sailings[0]?.price_pp || 'N/A'}pp</strong>`,
+        `From: <strong>£${cruise.cruise_only_price || 'N/A'}pp</strong>`,
         "Gratuities Included",
         "Voyager Discount available"
       ],
-      originalPrice: cruise.sailings[0]?.price_pp, // Assuming no separate original price from API
-      discountedPrice: cruise.sailings[0]?.price_pp,
-      ship: cruise.ship.name,
-      destination: cruise.itinerary.name,
-      departureDates: new Date(cruise.sailings[0]?.start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
+      originalPrice: parseFloat(cruise.cruise_only_price), // Assuming no separate original price from API
+      discountedPrice: parseFloat(cruise.cruise_only_price),
+      ship: cruise.ship_title,
+      destination: cruise.regions.join(', ') || 'Various',
+      departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
     }));
 
   } catch (error) {
