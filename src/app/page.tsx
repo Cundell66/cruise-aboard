@@ -38,6 +38,9 @@ async function getCruiseOffers(): Promise<CruiseOffer[]> {
       }
     }
 
+    // Sort cruises by departure date
+    allCruises.sort((a, b) => new Date(a.starts_on).getTime() - new Date(b.starts_on).getTime());
+
     // Filter and Map the API response to the CruiseOffer interface
     return allCruises
       .filter((cruise: any) => cruise.starts_at === 'Southampton' && cruise.cruise_only_price && parseFloat(cruise.cruise_only_price) > 0)
