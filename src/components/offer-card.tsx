@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -55,7 +56,7 @@ export function OfferCard({ offer, onRequestQuote }: OfferCardProps) {
           </ul>
         </div>
         <div className="p-6 pt-0 mt-auto">
-          <Button onClick={() => onRequestQuote(offer)} size="lg" className="w-full bg-pink-600 text-white font-bold hover:bg-pink-700">
+          <Button onClick={() => onRequestQuote(offer)} size="lg" className="w-full bg-accent text-white font-bold hover:bg-accent/90">
             Request A Quote
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>

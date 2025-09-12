@@ -14,11 +14,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Please enter a valid email address."),
-  ship: z.string().min(3, "Please enter a valid ship name."),
+  adults: z.string().min(1, "Please select the number of adults."),
+  children: z.string().min(1, "Please select the number of children."),  ship: z.string().min(3, "Please enter a valid ship name."),
   departureDates: z.string().min(1, "Please enter your desired departure dates."),
   destination: z.string().min(3, "Please enter your desired destination."),
-  adults: z.string().min(1, "Please select the number of adults."),
-  children: z.string().min(1, "Please select the number of children."),
 });
 
 export type EnquiryFormValues = z.infer<typeof formSchema>;
@@ -37,11 +36,11 @@ export function EnquiryForm({ onSubmit, isLoading, serverError, initialData }: E
     defaultValues: {
       name: "",
       email: "",
+      adults: initialData?.adults || "2",
+      children: initialData?.children || "0",
       ship: initialData?.ship || "",
       departureDates: initialData?.departureDates || "",
       destination: initialData?.destination || "",
-      adults: initialData?.adults || "2",
-      children: initialData?.children || "0",
     },
   });
 
@@ -81,48 +80,6 @@ export function EnquiryForm({ onSubmit, isLoading, serverError, initialData }: E
                   </FormItem>
                 )}
               />
-            </div>
-            <FormField
-              control={form.control}
-              name="ship"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cruise Ship</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Symphony of the Seas" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="destination"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Destination</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Caribbean, Alaska, Mediterranean" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="departureDates"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Departure Dates</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Summer 2025, December 2024" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
                 name="adults"
@@ -167,8 +124,47 @@ export function EnquiryForm({ onSubmit, isLoading, serverError, initialData }: E
                   </FormItem>
                 )}
               />
-            </div>
-            
+            {/* </div> */}
+            <FormField
+              control={form.control}
+              name="ship"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cruise Ship</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Symphony of the Seas" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="destination"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Destination</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Caribbean, Alaska, Mediterranean" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="departureDates"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Departure Dates</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Summer 2025, December 2024" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
             {serverError && (
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
