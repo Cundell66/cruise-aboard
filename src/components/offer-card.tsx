@@ -13,7 +13,7 @@ export interface CruiseOffer {
   imageUrl: string;
   imageAlt: string;
   details: string[];
-  originalPrice?: number;
+  originalPrice: number;
   discountedPrice: number;
   ship: string;
   destination: string;
@@ -50,12 +50,19 @@ export function OfferCard({ offer, onRequestQuote }: OfferCardProps) {
             {offer.details.map((detail, index) => (
               <li key={index} className="flex items-center">
                 <span className="text-primary mr-2">◆</span>
-                <p dangerouslySetInnerHTML={{ __html: detail.replace(/£(\d+)/g, '<span class="font-bold text-blue-600">£$1</span>').replace(/From: <del>.*<\/del>/, `From: <del class="text-muted-foreground">${offer.originalPrice ? `£${offer.originalPrice}` : ''}</del>`) }} />
+                <p dangerouslySetInnerHTML={{ __html: detail }} />
               </li>
             ))}
           </ul>
         </div>
-        <div className="p-6 pt-0 mt-auto">
+        <div className="px-6 pb-4">
+          <p className="text-lg">
+            <span className="text-muted-foreground">From: </span>
+            <del className="text-muted-foreground">£{offer.originalPrice}</del>
+            <strong className="text-blue-600 ml-2">£{offer.discountedPrice}pp</strong>
+          </p>
+        </div>
+        <div className="p-6 pt-2 mt-auto">
           <Button onClick={() => onRequestQuote(offer)} size="lg" className="w-full bg-accent text-white font-bold hover:bg-accent/90">
             Request A Quote
             <ArrowRight className="ml-2 h-5 w-5" />

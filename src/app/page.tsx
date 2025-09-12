@@ -25,26 +25,32 @@ async function getCruiseOffers(): Promise<CruiseOffer[]> {
 
     const data = await response.json();
 
-    // Map the API response to the CruiseOffer interface
-    return data.cruises.map((cruise: any, index: number) => ({
-      id: cruise.vendor_id || index,
-      title: cruise.operator_title,
-      date: new Date(cruise.starts_on).toLocaleDateString('en-GB', { month: 'long', day: 'numeric', year: 'numeric' }) || 'Date TBC',
-      imageUrl: 'https://placehold.co/600x400', // API does not seem to provide images
-      imageAlt: cruise.name,
-      details: [
-        `${cruise.cruise_nights} nights`,
-        cruise.name,
-        `From: <strong>£${cruise.cruise_only_price || 'N/A'}pp</strong>`,
-        "Gratuities Included",
-        "Voyager Discount available"
-      ],
-      originalPrice: parseFloat(cruise.cruise_only_price), // Assuming no separate original price from API
-      discountedPrice: parseFloat(cruise.cruise_only_price),
-      ship: cruise.ship_title,
-      destination: cruise.regions.join(', ') || 'Various',
-      departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
-    }));
+    // Filter and Map the API response to the CruiseOffer interface
+    return data.cruises
+      .filter((cruise: any) => cruise.cruise_only_price && parseFloat(cruise.cruise_only_price) > 0)
+      .map((cruise: any, index: number) => {
+        const originalPrice = parseFloat(cruise.cruise_only_price);
+        const discountedPrice = Math.round(originalPrice * 0.9);
+
+        return {
+          id: cruise.vendor_id || index,
+          title: cruise.ship_title,
+          date: new Date(cruise.starts_on).toLocaleDateString('en-GB', { month: 'long', day: 'numeric', year: 'numeric' }) || 'Date TBC',
+          imageUrl: 'https://placehold.co/600x400', // API does not seem to provide images
+          imageAlt: cruise.name,
+          details: [
+            `${cruise.cruise_nights} nights`,
+            cruise.name,
+            "Gratuities Included",
+            "Voyager Discount available"
+          ],
+          originalPrice: originalPrice,
+          discountedPrice: discountedPrice,
+          ship: cruise.ship_title,
+          destination: cruise.regions.join(', ') || 'Various',
+          departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
+        };
+      });
 
   } catch (error) {
     console.error('Failed to fetch cruise offers:', error);
