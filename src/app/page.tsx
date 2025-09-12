@@ -6,7 +6,15 @@ import { LandingPageClient } from '@/components/landing-page-client';
 import { FaqItem } from '@/components/faq-section';
 
 async function getCruiseOffers(): Promise<CruiseOffer[]> {
-  const baseUrl = 'https://www.widgety.co.uk/api/cruises.json?operator=msc-cruises&start_from=Southampton&token=df770a1821b3878341f3870173e3c2d2733a10d4a7d8c34fd05f0e83f6dc7dfa&app_id=4ad715a61acc68d4505319eb4270705fc20d2790&page=';
+  const token = process.env.TOKEN;
+  const appId = process.env.APPID;
+
+  if (!token || !appId) {
+    console.error('API token or App ID is not set in environment variables.');
+    return [];
+  }
+
+  const baseUrl = `https://www.widgety.co.uk/api/cruises.json?operator=msc-cruises&start_from=Southampton&token=${token}&app_id=${appId}&page=`;
   const headers = {
     'User-Agent': 'CruiseAboardTracker/1.2',
     'Accept': 'application/json;api_version=2',
