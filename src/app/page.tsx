@@ -10,6 +10,12 @@ interface FeaturedCruiseInfo {
   offerPrice: number;
 }
 
+interface ItineraryInfo {
+  vendor_id: string;
+  imageUrl: string;
+  title: string;
+}
+
 async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCruises: CruiseOffer[] }> {
   const token = process.env.TOKEN;
   const appId = process.env.APPID;
@@ -19,11 +25,11 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
     return { featuredCruises: [], allCruises: [] };
   }
 
-  // Read and parse itinerary images
+  // Read and parse itinerary images and titles
   const itineraryImagesFilePath = path.join(process.cwd(), 'src', 'lib', 'itinerary-images.json');
   const itineraryImagesJsonData = fs.readFileSync(itineraryImagesFilePath, 'utf-8');
   const itineraryImagesData = JSON.parse(itineraryImagesJsonData);
-  const itineraryImageMap = new Map(itineraryImagesData.itineraries.map((item: { vendor_id: string; imageUrl: string; }) => [item.vendor_id, item.imageUrl]));
+  const itineraryDataMap = new Map(itineraryImagesData.itineraries.map((item: ItineraryInfo) => [item.vendor_id, { imageUrl: item.imageUrl, title: item.title }]));
 
   // Read and parse featured cruises
   const featuredCruisesFilePath = path.join(process.cwd(), 'src', 'lib', 'featured-cruises.json');
@@ -70,15 +76,19 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
         const originalPrice = parseFloat(cruise.cruise_only_price);
         const isFeatured = featuredCruiseMap.has(cruise.vendor_id);
         const discountedPrice = isFeatured ? featuredCruiseMap.get(cruise.vendor_id)! : Math.round(originalPrice * 0.9);
-        const imageUrl = itineraryImageMap.get(cruise.vendor_id) || 'https://placehold.co/600x400.jpg';
+        const itineraryInfo = itineraryDataMap.get(cruise.vendor_id);
+        
+        const imageUrl = itineraryInfo?.imageUrl || 'https://placehold.co/600x400.jpg';
+        const title = itineraryInfo?.title || cruise.ship_title;
 
         return {
           id: cruise.vendor_id || index,
-          title: cruise.ship_title,
+          title: title,
           date: new Date(cruise.starts_on).toLocaleDateString('en-GB', { month: 'long', day: 'numeric', year: 'numeric' }) || 'Date TBC',
           imageUrl: imageUrl, 
           imageAlt: cruise.name,
           details: [
+            cruise.ship_title,
             `${cruise.cruise_nights} nights`,
             cruise.name,
             "<strong>Premium Drinks Available</strong>",

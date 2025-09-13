@@ -40,7 +40,7 @@ const prompt = ai.definePrompt({
   name: 'suggestAlternativeCruisesPrompt',
   input: {schema: SuggestAlternativeCruisesInputSchema},
   output: {schema: SuggestAlternativeCruisesOutputSchema},
-  prompt: `You are a cruise expert. A customer has submitted an enquiry for a cruise. Suggest three alternative MSC Virtuosa cruise options (destinations or dates) that are similar to the customer's enquiry, to help them explore more options.
+  prompt: `You are a cruise expert. A customer has submitted an enquiry for a cruise. Suggest three alternative MSC cruise options departing from Southampton (destinations or dates) that are similar to the customer's enquiry, to help them explore more options.
 
 Enquiry Details:
 Name: {{{name}}}
