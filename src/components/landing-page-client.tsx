@@ -1,17 +1,19 @@
 
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import Image from "next/image";
 import type { SuggestAlternativeCruisesOutput } from "@/ai/flows/suggest-alternative-cruises";
 import { EnquiryForm } from "@/components/enquiry-form";
 import { CruiseSuggestions } from "@/components/cruise-suggestions";
 import { submitEnquiry } from "@/app/actions";
-import { Anchor, Ship } from "lucide-react";
+import { Anchor, Ship, Filter, XCircle } from "lucide-react";
 import type { EnquiryFormValues } from "@/components/enquiry-form";
 import { OfferCard, type CruiseOffer } from "@/components/offer-card";
 import { FaqSection, type FaqItem } from "@/components/faq-section";
 import { InclusionsSection } from "./inclusions-section";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "./ui/button";
 
 interface LandingPageClientProps {
     featuredCruises: CruiseOffer[];
@@ -25,6 +27,9 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
   const [error, setError] = useState<string | null>(null);
   const [selectedOffer, setSelectedOffer] = useState<Partial<EnquiryFormValues> | undefined>(undefined);
   
+  const [monthFilter, setMonthFilter] = useState('all');
+  const [shipFilter, setShipFilter] = useState('all');
+
   const formRef = useRef<HTMLDivElement>(null);
 
   const handleFormSubmit = async (data: EnquiryFormValues) => {
@@ -52,6 +57,35 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
       vendorId: String(offer.id),
     });
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const availableMonths = useMemo(() => {
+    const months = new Set<string>();
+    allCruises.forEach(cruise => {
+        const date = new Date(cruise.date);
+        const monthYear = `${date.toLocaleString('en-GB', { month: 'long' })} ${date.getFullYear()}`;
+        months.add(monthYear);
+    });
+    return Array.from(months);
+  }, [allCruises]);
+
+  const availableShips = ['MSC Virtuosa', 'MSC Poesia', 'MSC Preziosa'];
+
+  const filteredCruises = useMemo(() => {
+    return allCruises.filter(cruise => {
+        const date = new Date(cruise.date);
+        const cruiseMonthYear = `${date.toLocaleString('en-GB', { month: 'long' })} ${date.getFullYear()}`;
+        
+        const monthMatch = monthFilter === 'all' || cruiseMonthYear === monthFilter;
+        const shipMatch = shipFilter === 'all' || cruise.ship === shipFilter;
+
+        return monthMatch && shipMatch;
+    });
+  }, [allCruises, monthFilter, shipFilter]);
+    
+  const handleClearFilters = () => {
+    setMonthFilter('all');
+    setShipFilter('all');
   };
 
   return (
@@ -105,10 +139,55 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
 
         <section id="all-offers" className="mb-12">
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">All MSC Cruises from Southampton</h2>
+            
+            <div className="bg-card p-4 rounded-lg border shadow-sm mb-8 flex flex-col md:flex-row items-center gap-4">
+                <div className="flex items-center gap-2 font-semibold text-primary/90">
+                    <Filter className="w-5 h-5"/>
+                    <span>Filter Cruises:</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:flex-row gap-4 w-full md:w-auto flex-grow">
+                    <Select value={monthFilter} onValueChange={setMonthFilter}>
+                        <SelectTrigger className="w-full sm:w-[200px]">
+                            <SelectValue placeholder="Filter by month..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Months</SelectItem>
+                            {availableMonths.map(month => (
+                                <SelectItem key={month} value={month}>{month}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    <Select value={shipFilter} onValueChange={setShipFilter}>
+                        <SelectTrigger className="w-full sm:w-[200px]">
+                            <SelectValue placeholder="Filter by ship..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Ships</SelectItem>
+                            {availableShips.map(ship => (
+                                <SelectItem key={ship} value={ship}>{ship}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                {(monthFilter !== 'all' || shipFilter !== 'all') && (
+                    <Button variant="ghost" onClick={handleClearFilters} className="text-muted-foreground hover:text-foreground">
+                        <XCircle className="w-4 h-4 mr-2" />
+                        Clear Filters
+                    </Button>
+                )}
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {allCruises.map(offer => (
-                <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />
-              ))}
+              {filteredCruises.length > 0 ? (
+                filteredCruises.map(offer => (
+                  <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />
+                ))
+              ) : (
+                <div className="md:col-span-2 lg:col-span-3 text-center py-10">
+                    <p className="text-lg text-muted-foreground">No cruises match your selected filters.</p>
+                </div>
+              )}
             </div>
         </section>
 
