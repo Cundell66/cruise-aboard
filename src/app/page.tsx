@@ -14,6 +14,11 @@ async function getCruiseOffers(): Promise<CruiseOffer[]> {
     return [];
   }
 
+  const itineraryImagesFilePath = path.join(process.cwd(), 'src', 'lib', 'itinerary-images.json');
+  const itineraryImagesJsonData = fs.readFileSync(itineraryImagesFilePath, 'utf-8');
+  const itineraryImagesData = JSON.parse(itineraryImagesJsonData);
+  const itineraryImageMap = new Map(itineraryImagesData.itineraries.map((item: { vendor_id: string; imageUrl: string; }) => [item.vendor_id, item.imageUrl]));
+
   const baseUrl = `https://www.widgety.co.uk/api/cruises.json?operator=msc-cruises&start_from=Southampton&token=${token}&app_id=${appId}&page=`;
   const headers = {
     'User-Agent': 'CruiseAboardTracker/1.2',
@@ -55,12 +60,13 @@ async function getCruiseOffers(): Promise<CruiseOffer[]> {
       .map((cruise: any, index: number) => {
         const originalPrice = parseFloat(cruise.cruise_only_price);
         const discountedPrice = Math.round(originalPrice * 0.9);
+        const imageUrl = itineraryImageMap.get(cruise.vendor_id) || 'https://placehold.co/600x400';
 
         return {
           id: cruise.vendor_id || index,
           title: cruise.ship_title,
           date: new Date(cruise.starts_on).toLocaleDateString('en-GB', { month: 'long', day: 'numeric', year: 'numeric' }) || 'Date TBC',
-          imageUrl: 'https://placehold.co/600x400', // API does not seem to provide images
+          imageUrl: imageUrl, 
           imageAlt: cruise.name,
           details: [
             `${cruise.cruise_nights} nights`,
