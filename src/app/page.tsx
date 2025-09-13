@@ -81,6 +81,11 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
         const imageUrl = itineraryInfo?.imageUrl || 'https://placehold.co/600x400.jpg';
         const title = itineraryInfo?.title || cruise.ship_title;
 
+        const formattedDestinations = cruise.name
+          .split(',')
+          .filter((destination: string) => destination.trim().toLowerCase() !== 'southampton' && destination.trim().toLowerCase() !== 'united kingdom')
+          .join('<span class="text-blue-600 mx-1">●</span>');
+
         return {
           id: cruise.vendor_id || index,
           title: title,
@@ -90,7 +95,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
           details: [
             cruise.ship_title,
             `${cruise.cruise_nights} nights`,
-            cruise.name,
+            formattedDestinations,
             "<strong>Premium Drinks Available</strong>",
             "Gratuities Included",
             "Voyager Discount available"
