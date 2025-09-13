@@ -14,11 +14,12 @@ import { FaqSection, type FaqItem } from "@/components/faq-section";
 import { InclusionsSection } from "./inclusions-section";
 
 interface LandingPageClientProps {
-    cruiseOffers: CruiseOffer[];
+    featuredCruises: CruiseOffer[];
+    allCruises: CruiseOffer[];
     faqItems: FaqItem[];
 }
 
-export function LandingPageClient({ cruiseOffers, faqItems }: LandingPageClientProps) {
+export function LandingPageClient({ featuredCruises, allCruises, faqItems }: LandingPageClientProps) {
   const [submissionState, setSubmissionState] = useState<SuggestAlternativeCruisesOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -91,10 +92,21 @@ export function LandingPageClient({ cruiseOffers, faqItems }: LandingPageClientP
             </div>
         </div>
 
-        <section id="offers" className="mb-12">
-            <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">Featured Cruises</h2>
+        {featuredCruises.length > 0 && (
+          <section id="featured-offers" className="mb-16">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">Featured Cruises</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredCruises.map(offer => (
+                  <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />
+                ))}
+              </div>
+          </section>
+        )}
+
+        <section id="all-offers" className="mb-12">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">All MSC Cruises from Southampton</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {cruiseOffers.map(offer => (
+              {allCruises.map(offer => (
                 <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />
               ))}
             </div>
