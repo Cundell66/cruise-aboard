@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useRef } from "react";
@@ -47,6 +48,7 @@ export function LandingPageClient({ cruiseOffers, faqItems }: LandingPageClientP
       ship: offer.ship,
       destination: offer.destination,
       departureDates: offer.departureDates,
+      vendorId: String(offer.id),
     });
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
   };

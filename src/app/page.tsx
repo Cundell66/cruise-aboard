@@ -71,14 +71,14 @@ async function getCruiseOffers(): Promise<CruiseOffer[]> {
           details: [
             `${cruise.cruise_nights} nights`,
             cruise.name,
-            "Premium Drinks Available",
+            "<strong>Premium Drinks Available</strong>",
             "Gratuities Included",
             "Voyager Discount available"
           ],
           originalPrice: originalPrice,
           discountedPrice: discountedPrice,
           ship: cruise.ship_title,
-          destination: cruise.regions.join(', ') || 'Various',
+          destination: cruise.name || 'Various',
           departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
         };
       });

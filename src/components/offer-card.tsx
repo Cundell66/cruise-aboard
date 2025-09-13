@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 export interface CruiseOffer {
-  id: number;
+  id: string | number;
   title: string;
   date: string;
   imageUrl: string;

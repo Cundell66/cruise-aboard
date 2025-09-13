@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -15,9 +16,11 @@ const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Please enter a valid email address."),
   adults: z.string().min(1, "Please select the number of adults."),
-  children: z.string().min(1, "Please select the number of children."),  ship: z.string().min(3, "Please enter a valid ship name."),
+  children: z.string().min(1, "Please select the number of children."),
+  ship: z.string().min(3, "Please enter a valid ship name."),
   departureDates: z.string().min(1, "Please enter your desired departure dates."),
   destination: z.string().min(3, "Please enter your desired destination."),
+  vendorId: z.string().optional(),
 });
 
 export type EnquiryFormValues = z.infer<typeof formSchema>;
@@ -36,11 +39,9 @@ export function EnquiryForm({ onSubmit, isLoading, serverError, initialData }: E
     defaultValues: {
       name: "",
       email: "",
-      adults: initialData?.adults || "2",
-      children: initialData?.children || "0",
-      ship: initialData?.ship || "",
-      departureDates: initialData?.departureDates || "",
-      destination: initialData?.destination || "",
+      adults: "2",
+      children: "0",
+      ...initialData,
     },
   });
 
@@ -124,15 +125,14 @@ export function EnquiryForm({ onSubmit, isLoading, serverError, initialData }: E
                   </FormItem>
                 )}
               />
-            {/* </div> */}
             <FormField
               control={form.control}
               name="ship"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="md:col-span-2">
                   <FormLabel>Cruise Ship</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Symphony of the Seas" {...field} />
+                    <Input placeholder="e.g., MSC Virtuosa" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -145,7 +145,7 @@ export function EnquiryForm({ onSubmit, isLoading, serverError, initialData }: E
                 <FormItem>
                   <FormLabel>Destination</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Caribbean, Alaska, Mediterranean" {...field} />
+                    <Input placeholder="e.g., Caribbean, Norwegian Fjords" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -158,7 +158,7 @@ export function EnquiryForm({ onSubmit, isLoading, serverError, initialData }: E
                 <FormItem>
                   <FormLabel>Departure Dates</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Summer 2025, December 2024" {...field} />
+                    <Input placeholder="e.g., Summer 2025" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

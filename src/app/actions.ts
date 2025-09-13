@@ -13,6 +13,7 @@ const EnquirySchema = z.object({
   destination: z.string().min(3, 'Please enter your desired destination.'),
   adults: z.string().min(1, "Please select the number of adults."),
   children: z.string().min(1, "Please select the number of children."),
+  vendorId: z.string().optional(),
 });
 
 async function sendEnquiryEmail(data: z.infer<typeof EnquirySchema>) {
@@ -35,7 +36,7 @@ async function sendEnquiryEmail(data: z.infer<typeof EnquirySchema>) {
 
   const mailOptions = {
     from: `"Get That Cruise Enquiry" <${process.env.SMTP_USER}>`,
-    to: process.env.ENQUIRY_RECIPIENT_EMAIL,
+    to: process.env.ENQUIRY_RECIPIENT_EMAIL, // Can be a comma-separated list
     subject: `New Cruise Enquiry from ${data.name}`,
     html: `
       <h1>New Cruise Enquiry</h1>
@@ -46,6 +47,7 @@ async function sendEnquiryEmail(data: z.infer<typeof EnquirySchema>) {
       <p><strong>Destination:</strong> ${data.destination}</p>
       <p><strong>Adults:</strong> ${data.adults}</p>
       <p><strong>Children:</strong> ${data.children}</p>
+      ${data.vendorId ? `<p><strong>Vendor ID:</strong> ${data.vendorId}</p>` : ''}
     `,
   };
 
