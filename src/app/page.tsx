@@ -8,6 +8,7 @@ import { FaqItem } from '@/components/faq-section';
 interface FeaturedCruiseInfo {
   vendor_id: string;
   offerPrice: number;
+  drinks?: 'included' | 'available';
 }
 
 interface ItineraryInfo {
@@ -35,7 +36,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
   const featuredCruisesFilePath = path.join(process.cwd(), 'src', 'lib', 'featured-cruises.json');
   const featuredCruisesJsonData = fs.readFileSync(featuredCruisesFilePath, 'utf-8');
   const featuredCruisesData = JSON.parse(featuredCruisesJsonData);
-  const featuredCruiseMap = new Map(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, item.offerPrice]));
+  const featuredCruiseMap = new Map(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks }]));
   const featuredVendorIds = new Set(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => item.vendor_id));
 
 
@@ -75,7 +76,9 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
       .map((cruise: any, index: number) => {
         const originalPrice = parseFloat(cruise.cruise_only_price);
         const isFeatured = featuredCruiseMap.has(cruise.vendor_id);
-        const discountedPrice = isFeatured ? featuredCruiseMap.get(cruise.vendor_id)! : Math.round(originalPrice * 0.9);
+        const featuredInfo = isFeatured ? featuredCruiseMap.get(cruise.vendor_id) : null;
+
+        const discountedPrice = featuredInfo ? featuredInfo.offerPrice : Math.round(originalPrice * 0.9);
         const itineraryInfo = itineraryDataMap.get(cruise.vendor_id);
         
         const imageUrl = itineraryInfo?.imageUrl || 'https://placehold.co/600x400.jpg';
@@ -84,7 +87,10 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
         const formattedDestinations = cruise.name
           .split(',')
           .filter((destination: string) => destination.trim().toLowerCase() !== 'southampton' && destination.trim().toLowerCase() !== 'united kingdom')
-          .join('<span class="text-blue-600 mx-1">●</span>');
+          .join('<span class="text-blue-600 mx-1">● </span>');
+
+        const drinksTextValue = featuredInfo?.drinks === 'included' ? 'Included' : 'Available';
+        const drinksText = `<strong>Premium Drinks ${drinksTextValue}</strong>`;
 
         return {
           id: cruise.vendor_id || index,
@@ -95,8 +101,9 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
           details: [
             cruise.ship_title,
             `${cruise.cruise_nights} nights`,
+            "From Southampton to:",
             formattedDestinations,
-            "<strong>Premium Drinks Available</strong>",
+            drinksText,
             "Gratuities Included",
             "Voyager Discount available"
           ],
