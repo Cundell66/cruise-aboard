@@ -28,7 +28,7 @@ interface OfferCardProps {
 export function OfferCard({ offer, onRequestQuote }: OfferCardProps) {
   return (
     <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
-      <div className="bg-primary text-primary-foreground text-center p-3">
+      <div className="bg-primary text-primary-foreground text-center p-3 flex items-center justify-center min-h-[5.5rem]">
         <h3 className="font-headline font-bold text-lg">{offer.title}</h3>
       </div>
       <CardContent className="p-0 flex-grow flex flex-col">
