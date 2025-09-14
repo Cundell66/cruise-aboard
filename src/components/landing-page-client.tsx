@@ -14,6 +14,29 @@ import { FaqSection, type FaqItem } from "@/components/faq-section";
 import { InclusionsSection } from "./inclusions-section";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "./ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+
+const videos = [
+    {
+      ship: 'MSC Virtuosa',
+      src: 'https://iframe.mediadelivery.net/embed/58732/3c61795a-5d9d-42f0-8e69-bb760aa53c0b?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
+    },
+    {
+      ship: 'MSC Poesia',
+      src: 'https://iframe.mediadelivery.net/embed/58732/629a8239-5561-464a-95c5-115f7b18973b?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
+    },
+    {
+      ship: 'MSC Preziosa',
+      src: 'https://iframe.mediadelivery.net/embed/58732/2312015e-3f6c-4235-9b60-316233a469a9?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
+    },
+  ];
 
 interface LandingPageClientProps {
     featuredCruises: CruiseOffer[];
@@ -104,27 +127,34 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
           </p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mb-12">
-            <div className="relative w-full h-56 md:h-96 rounded-xl overflow-hidden shadow-2xl shadow-primary/10">
-                <iframe 
-                    src="https://iframe.mediadelivery.net/embed/58732/3c61795a-5d9d-42f0-8e69-bb760aa53c0b?autoplay=true&loop=true&muted=true&preload=true&responsive=true" 
-                    className="absolute top-0 left-0 w-full h-full border-0"
-                    allow="autoplay; fullscreen" 
-                    referrerPolicy="no-referrer"
-                    allowFullScreen
-                ></iframe>
-            </div>
-            <div className="relative w-full h-56 md:h-96 rounded-xl overflow-hidden shadow-2xl shadow-primary/10 hidden lg:block">
-                <Image
-                    src="/Cruise.png"
-                    alt="Luxury cruise ship"
-                    fill
-                    sizes="(max-width: 1024px) 0vw, 50vw"
-                    className="object-cover"
-                    data-ai-hint="cruise ship"
-                />
-            </div>
-        </div>
+        <div className="mb-12">
+            <Carousel className="w-full">
+              <CarouselContent>
+                {videos.map((video, index) => (
+                  <CarouselItem key={index}>
+                    <div className="p-1">
+                      <Card>
+                        <CardContent className="relative flex flex-col aspect-video items-center justify-center p-0 rounded-lg overflow-hidden">
+                           <div className="absolute top-0 left-0 w-full z-10 p-4 bg-gradient-to-b from-black/60 to-transparent">
+                             <h3 className="font-headline text-2xl font-bold text-white text-center">{video.ship}</h3>
+                           </div>
+                           <iframe
+                             src={video.src}
+                             className="absolute top-0 left-0 w-full h-full border-0"
+                             allow="autoplay; fullscreen"
+                             allowFullScreen
+                             referrerPolicy="no-referrer"
+                           ></iframe>
+                         </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="hidden sm:flex" />
+              <CarouselNext className="hidden sm:flex" />
+            </Carousel>
+          </div>
 
         {featuredCruises.length > 0 && (
           <section id="featured-offers" className="mb-16">
