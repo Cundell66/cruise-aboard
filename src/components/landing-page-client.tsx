@@ -30,11 +30,11 @@ const videos = [
     },
     {
       ship: 'MSC Poesia',
-      src: 'https://iframe.mediadelivery.net/embed/58732/629a8239-5561-464a-95c5-115f7b18973b?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
+      src: 'https://iframe.mediadelivery.net/embed/58732/7dc1b7ca-62e6-4949-b4c3-8d91f66f7bd0?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
     },
     {
       ship: 'MSC Preziosa',
-      src: 'https://iframe.mediadelivery.net/embed/58732/2312015e-3f6c-4235-9b60-316233a469a9?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
+      src: 'https://iframe.mediadelivery.net/embed/58732/6bc430cb-6689-41e7-b5bb-1bbe3ddff9a5?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
     },
   ];
 
@@ -127,7 +127,7 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
           </p>
         </header>
 
-        <div className="mb-12">
+        <div className="mb-12 max-w-3xl mx-auto">
             <Carousel className="w-full">
               <CarouselContent>
                 {videos.map((video, index) => (
