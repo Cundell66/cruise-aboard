@@ -3,6 +3,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { Navbar } from '@/components/navbar';
+import { Footer } from '@/components/footer';
 
 export const metadata: Metadata = {
   title: 'Get That Cruise',
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <Navbar />
         {children}
+        <Footer />
         <Toaster />
       </body>
     </html>
