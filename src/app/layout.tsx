@@ -6,6 +6,7 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Analytics } from '@/components/analytics';
 import { CookieConsentBanner } from '@/components/cookie-consent-banner';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Get That Cruise',
@@ -31,7 +32,9 @@ export default function RootLayout({
         <Footer />
         <Toaster />
         <CookieConsentBanner />
-        <Analytics />
+        <Suspense>
+          <Analytics />
+        </Suspense>
       </body>
     </html>
   );
