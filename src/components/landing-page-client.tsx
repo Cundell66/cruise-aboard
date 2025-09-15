@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/carousel"
 
 const videos = [
-    {
+   {
       ship: 'MSC Virtuosa',
       src: 'https://iframe.mediadelivery.net/embed/58732/3c61795a-5d9d-42f0-8e69-bb760aa53c0b?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
     },
