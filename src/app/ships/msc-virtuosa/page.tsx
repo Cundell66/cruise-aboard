@@ -1,11 +1,21 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Ship } from "lucide-react";
+import { ShipStats } from "@/components/ship-stats";
+import { Ship, Users, BedDouble, UserCog, Gauge, Ruler, Weight } from "lucide-react";
 
 const video = {
   ship: 'MSC Virtuosa',
   src: 'https://iframe.mediadelivery.net/embed/58732/3c61795a-5d9d-42f0-8e69-bb760aa53c0b?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
 };
+
+const shipStats = [
+    { icon: Users, value: "6,334", label: "Number of passengers" },
+    { icon: BedDouble, value: "2,421", label: "Number of cabins" },
+    { icon: UserCog, value: "1,704", label: "Crew members" },
+    { icon: Gauge, value: "22 knots", label: "Maximum Speed" },
+    { icon: Ruler, value: "331 / 43 / 65", label: "Length (m) / Beam (m) / Height (m)" },
+    { icon: Weight, value: "181,541 tons", label: "Gross tonnage" },
+];
 
 export default function MscVirtuosaPage() {
   return (
@@ -36,6 +46,11 @@ export default function MscVirtuosaPage() {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl.
             </p>
           </div>
+          <ShipStats 
+            title="MSC Virtuosa in numbers"
+            subtitle="Discover how many details make your experience so great."
+            stats={shipStats}
+          />
         </CardContent>
       </Card>
     </main>
