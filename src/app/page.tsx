@@ -1,3 +1,4 @@
+
 export const dynamic = 'force-dynamic';
 
 import fs from 'fs';
@@ -117,19 +118,20 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
       .filter(cruise => featuredVendorIds.has(String(cruise.id)))
       .map(cruise => {
           const featuredInfo = featuredCruiseMap.get(String(cruise.id));
+          // If there's no featured info for this cruise, return it as is.
           if (!featuredInfo) return cruise;
 
-          const drinksIncluded = featuredInfo.drinks === 'included';
-          const drinksText = `<strong>Premium Drinks ${drinksIncluded ? 'Included' : 'Available'}</strong>`;
-
-          // Clone the cruise object to avoid mutating the original in the allCruises list
-          const featuredCruise = { ...cruise, details: [...cruise.details] }; // Deep copy details
+          // Create a clone to avoid modifying the object in the allCruises list
+          const featuredCruise = { ...cruise, details: [...cruise.details] };
+          
           featuredCruise.discountedPrice = featuredInfo.offerPrice;
+          const drinksIncluded = featuredInfo.drinks === 'included';
           featuredCruise.drinksIncluded = drinksIncluded;
           
           // Find and replace the default drinks text
           const drinksIndex = featuredCruise.details.findIndex(detail => detail.includes("Premium Drinks"));
           if (drinksIndex !== -1) {
+              const drinksText = `<strong>Premium Drinks ${drinksIncluded ? 'Included' : 'Available'}</strong>`;
               featuredCruise.details[drinksIndex] = drinksText;
           }
 
