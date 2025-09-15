@@ -71,26 +71,17 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
       }
     }
 
-    const mappedCruises: CruiseOffer[] = allCruisesFromApi
+    const allCruises: CruiseOffer[] = allCruisesFromApi
       .filter((cruise: any) => cruise.starts_at === 'Southampton' && cruise.cruise_only_price && parseFloat(cruise.cruise_only_price) > 0)
       .map((cruise: any, index: number) => {
         const originalPrice = parseFloat(cruise.cruise_only_price);
-        const isFeatured = featuredCruiseMap.has(cruise.vendor_id);
-        const featuredInfo = isFeatured ? featuredCruiseMap.get(cruise.vendor_id) : null;
-
-        const discountedPrice = featuredInfo ? featuredInfo.offerPrice : Math.round(originalPrice * 0.9);
         const itineraryInfo = itineraryDataMap.get(cruise.vendor_id);
-        
         const imageUrl = itineraryInfo?.imageUrl || 'https://placehold.co/600x400.jpg';
         const title = itineraryInfo?.title || cruise.ship_title;
-
         const formattedDestinations = cruise.name
           .split(',')
           .filter((destination: string) => destination.trim().toLowerCase() !== 'southampton' && destination.trim().toLowerCase() !== 'united kingdom')
           .join('<span class="text-blue-600 mx-1">● </span>');
-
-        const drinksIncluded = featuredInfo?.drinks === 'included';
-        const drinksText = `<strong>Premium Drinks ${drinksIncluded ? 'Included' : 'Available'}</strong>`;
 
         return {
           id: cruise.vendor_id || index,
@@ -103,23 +94,40 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
             `${cruise.cruise_nights} nights`,
             "From Southampton to:",
             formattedDestinations,
-            drinksText,
+            "<strong>Premium Drinks Available</strong>",
             "Gratuities Included",
             "Voyager Discount available"
           ],
           originalPrice: originalPrice,
-          discountedPrice: discountedPrice,
+          discountedPrice: Math.round(originalPrice * 0.9),
           ship: cruise.ship_title,
           destination: cruise.name || 'Various',
           departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
-          drinksIncluded: drinksIncluded,
         };
       });
 
-    mappedCruises.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    allCruises.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     
-    const featuredCruises = mappedCruises.filter(cruise => featuredVendorIds.has(String(cruise.id)));
-    const allCruises = mappedCruises;
+    const featuredCruises = allCruises
+      .filter(cruise => featuredVendorIds.has(String(cruise.id)))
+      .map(cruise => {
+          const featuredInfo = featuredCruiseMap.get(String(cruise.id));
+          if (!featuredInfo) return cruise;
+
+          const drinksIncluded = featuredInfo.drinks === 'included';
+          const drinksText = `<strong>Premium Drinks ${drinksIncluded ? 'Included' : 'Available'}</strong>`;
+
+          // Clone the cruise object to avoid mutating the original in the allCruises list
+          const featuredCruise = { ...cruise };
+          featuredCruise.discountedPrice = featuredInfo.offerPrice;
+          featuredCruise.drinksIncluded = drinksIncluded;
+          
+          // Replace the default drinks text with the specific one for the feature
+          const detailsWithoutDrinks = featuredCruise.details.filter(detail => !detail.includes("Premium Drinks"));
+          featuredCruise.details = [...detailsWithoutDrinks.slice(0, 4), drinksText, ...detailsWithoutDrinks.slice(4)];
+
+          return featuredCruise;
+      });
     
     return { featuredCruises, allCruises };
 
