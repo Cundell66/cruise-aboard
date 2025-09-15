@@ -20,20 +20,6 @@ interface ItineraryInfo {
   title: string;
 }
 
-async function fetchWithTimeout(url: string, options: RequestInit, timeout = 8000): Promise<Response> {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-
-  const response = await fetch(url, {
-    ...options,
-    signal: controller.signal  
-  });
-
-  clearTimeout(id);
-
-  return response;
-}
-
 async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCruises: CruiseOffer[] }> {
   const token = process.env.TOKEN;
   const appId = process.env.APPID;
@@ -89,8 +75,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
 
   try {
     while (hasMorePages && currentPage <= maxPages) {
-      console.log(`Fetching page ${currentPage}...`);
-      const response = await fetchWithTimeout(`${baseUrl}${currentPage}`, {
+      const response = await fetch(`${baseUrl}${currentPage}`, {
         headers,
       });
 
@@ -110,8 +95,6 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
       }
     }
 
-    console.log(`Fetched a total of ${allCruisesFromApi.length} cruises from the API.`);
-
     const allCruises: CruiseOffer[] = allCruisesFromApi
       .filter((cruise: any) => cruise.starts_at === 'Southampton' && cruise.cruise_only_price && parseFloat(cruise.cruise_only_price) > 0)
       .map((cruise: any, index: number) => {
@@ -119,10 +102,12 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
         const itineraryInfo = itineraryDataMap.get(cruise.vendor_id);
         const imageUrl = itineraryInfo?.imageUrl || 'https://placehold.co/600x400.jpg';
         const title = itineraryInfo?.title || cruise.ship_title;
-        const formattedDestinations = cruise.name
-          .split(',')
-          .filter((destination: string) => destination.trim().toLowerCase() !== 'southampton' && destination.trim().toLowerCase() !== 'united kingdom')
-          .join('<span class="text-blue-600 mx-1">● </span>');
+        const formattedDestinations = cruise.name && typeof cruise.name === 'string'
+          ? cruise.name
+            .split(',')
+            .filter((destination: string) => destination.trim().toLowerCase() !== 'southampton' && destination.trim().toLowerCase() !== 'united kingdom')
+            .join('<span class="text-blue-600 mx-1">● </span>')
+          : "Various destinations";
 
         return {
           id: cruise.vendor_id || index,
