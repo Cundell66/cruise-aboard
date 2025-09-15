@@ -5,6 +5,8 @@ import { type CruiseOffer } from "@/components/offer-card";
 import { LandingPageClient } from '@/components/landing-page-client';
 import { FaqItem } from '@/components/faq-section';
 
+export const dynamic = 'force-dynamic';
+
 interface FeaturedCruiseInfo {
   vendor_id: string;
   offerPrice: number;
