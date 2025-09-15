@@ -18,6 +18,7 @@ export interface CruiseOffer {
   ship: string;
   destination: string;
   departureDates: string;
+  drinksIncluded?: boolean;
 }
 
 interface OfferCardProps {
@@ -58,7 +59,9 @@ export function OfferCard({ offer, onRequestQuote }: OfferCardProps) {
         <div className="px-6 pb-4">
           <p className="text-lg">
             <span className="text-black-1000"><strong>From: </strong></span>
-            <del className="text-muted-foreground">£{offer.originalPrice}</del>
+            {!offer.drinksIncluded && (
+              <del className="text-muted-foreground">£{offer.originalPrice}</del>
+            )}
             <strong className="text-blue-600 ml-2">£{offer.discountedPrice} pp</strong>
           </p>
         </div>

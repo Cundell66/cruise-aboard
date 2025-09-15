@@ -89,8 +89,8 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
           .filter((destination: string) => destination.trim().toLowerCase() !== 'southampton' && destination.trim().toLowerCase() !== 'united kingdom')
           .join('<span class="text-blue-600 mx-1">● </span>');
 
-        const drinksTextValue = featuredInfo?.drinks === 'included' ? 'Included' : 'Available';
-        const drinksText = `<strong>Premium Drinks ${drinksTextValue}</strong>`;
+        const drinksIncluded = featuredInfo?.drinks === 'included';
+        const drinksText = `<strong>Premium Drinks ${drinksIncluded ? 'Included' : 'Available'}</strong>`;
 
         return {
           id: cruise.vendor_id || index,
@@ -112,6 +112,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
           ship: cruise.ship_title,
           destination: cruise.name || 'Various',
           departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
+          drinksIncluded: drinksIncluded,
         };
       });
 

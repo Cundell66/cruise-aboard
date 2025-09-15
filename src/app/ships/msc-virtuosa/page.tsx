@@ -41,11 +41,14 @@ export default function MscVirtuosaPage() {
           <div className="text-muted-foreground space-y-4">
             <h2 className="font-headline text-2xl font-semibold text-primary/90 mt-6">About the Ship</h2>
             <p>
-              [Placeholder for details about MSC Virtuosa. You can describe the ship's features, amenities, dining options, entertainment, and more here.]
+            <strong>Masterpiece at Sea</strong>
             </p>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl.
-            </p>
+              MSC Virtuosa’s namesake comes from the word virtuoso, meaning someone highly skilled in any field of activity, and so MSC Virtuosa was named to pay homage to the skill and expertise of the MSC Cruises architects.
+              <br />
+              MSC Virtuosa belongs to the “Meraviglia Class”, where the impressive array of onboard experiences come together in perfect harmony with the space and the destinations, to deliver the ultimate cruise holiday experience.
+              <br />
+              In addition, MSC Virtuosa is featured with an advanced wastewater treatment system, and she is actively contributing to impactful environmental conservation and humanitarian programs at the MSC Foundation Centre on board.            </p>
           </div>
           <ShipStats 
             title="MSC Virtuosa in numbers"

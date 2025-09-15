@@ -2,17 +2,18 @@
 {
   "featured": [
     {
-      "vendor_id": "VI20260509SOUSOU",
+      "vendor_id": "VI20260530SOUSOU",
       "drinks":"included",
-      "offerPrice": 645
+      "offerPrice": 822
     },
     {
       "vendor_id": "PO20251219SOUSOU",
       "offerPrice": 885
     },
     {
-      "vendor_id": "PO20251016SOUSOU",
-      "offerPrice": 590
+      "vendor_id": "VI20260820SOUSOU",
+      "drinks":"included",
+      "offerPrice": 1505
     }
   ]
 }

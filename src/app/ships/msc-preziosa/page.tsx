@@ -41,10 +41,10 @@ export default function MscPreziosaPage() {
            <div className="text-muted-foreground space-y-4">
             <h2 className="font-headline text-2xl font-semibold text-primary/90 mt-6">About the Ship</h2>
             <p>
-              [Placeholder for details about MSC Preziosa. You can describe the ship's features, amenities, dining options, entertainment, and more here.]
+              <strong> Spectacular days </strong>
             </p>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl.
+              The classic design of beautifully crafted MSC Preziosa includes spectacular features such as a real stone piazza, sweeping Swarovski crystal staircases and a magical ‘infinity’ pool. There’s all this and more to discover at your own pace on board, enjoying every moment to the full as you voyage to some of the world’s most beautiful destinations.
             </p>
           </div>
           <ShipStats 
