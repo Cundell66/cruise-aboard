@@ -4,7 +4,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -110,21 +110,33 @@ export function Navbar() {
 
   const MobileNavLinks = () => (
     <>
-        <Link href="/" className={cn("block py-2 text-lg font-medium", pathname === "/" ? "text-white" : "text-primary-foreground/60")}>Home</Link>
+        <SheetClose asChild>
+          <Link href="/" className={cn("block py-2 text-lg font-medium", pathname === "/" ? "text-white" : "text-primary-foreground/60")}>Home</Link>
+        </SheetClose>
         <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="ships" className="border-b-0">
                 <AccordionTrigger className={cn("py-2 text-lg font-medium hover:no-underline", pathname.startsWith("/ships") ? "text-white" : "text-primary-foreground/60")}>Ships</AccordionTrigger>
                 <AccordionContent className="pb-0 pl-4">
                     {shipLinks.map(({ href, label }) => (
-                         <Link key={href} href={href} className="block py-2 text-lg font-medium text-primary-foreground/60">{label}</Link>
+                         <SheetClose asChild key={href}>
+                           <Link href={href} className="block py-2 text-lg font-medium text-primary-foreground/60">{label}</Link>
+                         </SheetClose>
                     ))}
                 </AccordionContent>
             </AccordionItem>
         </Accordion>
-        <Link href="/about" className={cn("block py-2 text-lg font-medium", pathname === "/about" ? "text-white" : "text-primary-foreground/60")}>About Us</Link>
-        <Link href="/terms" className={cn("block py-2 text-lg font-medium", pathname === "/terms" ? "text-white" : "text-primary-foreground/60")}>Terms & Conditions</Link>
-        <Link href="/privacy" className={cn("block py-2 text-lg font-medium", pathname === "/privacy" ? "text-white" : "text-primary-foreground/60")}>Privacy Policy</Link>
-        <Link href="/cookies" className={cn("block py-2 text-lg font-medium", pathname === "/cookies" ? "text-white" : "text-primary-foreground/60")}>Cookie Policy</Link>
+        <SheetClose asChild>
+          <Link href="/about" className={cn("block py-2 text-lg font-medium", pathname === "/about" ? "text-white" : "text-primary-foreground/60")}>About Us</Link>
+        </SheetClose>
+        <SheetClose asChild>
+          <Link href="/terms" className={cn("block py-2 text-lg font-medium", pathname === "/terms" ? "text-white" : "text-primary-foreground/60")}>Terms & Conditions</Link>
+        </SheetClose>
+        <SheetClose asChild>
+          <Link href="/privacy" className={cn("block py-2 text-lg font-medium", pathname === "/privacy" ? "text-white" : "text-primary-foreground/60")}>Privacy Policy</Link>
+        </SheetClose>
+        <SheetClose asChild>
+          <Link href="/cookies" className={cn("block py-2 text-lg font-medium", pathname === "/cookies" ? "text-white" : "text-primary-foreground/60")}>Cookie Policy</Link>
+        </SheetClose>
     </>
   );
 
@@ -154,10 +166,12 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="left" className="bg-primary text-primary-foreground">
               <div className="grid gap-6 p-6">
-                <Link href="/" className="flex items-center gap-2">
-                    <Image src="/logo.png" alt="Get That Cruise Logo" width={32} height={32} />
-                    <span className="font-bold">Get That Cruise</span>
-                </Link>
+                 <SheetClose asChild>
+                  <Link href="/" className="flex items-center gap-2">
+                      <Image src="/logo.png" alt="Get That Cruise Logo" width={32} height={32} />
+                      <span className="font-bold">Get That Cruise</span>
+                  </Link>
+                </SheetClose>
                 <nav className="grid gap-4">
                   <MobileNavLinks />
                 </nav>
