@@ -123,12 +123,14 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
             <Ship className="w-8 h-8 md:w-10 md:h-10 text-primary" />
           </div>
           <p className="font-body text-lg text-muted-foreground">
-            Your dream voyage is just an enquiry away.
+            The lowest MSC prices on the market.
           </p>
         </header>
 
-        <div className="mb-12 max-w-3xl mx-auto">
-            <Carousel className="w-full">
+        <div className="mb-12 max-w-3xl mx-auto text-2xl text-muted-foreground text-center font-headline">
+          <strong>Cruise Week - An EXTRA 5% Off All Listed Prices</strong>
+          <img src="/cruise-week.jpg" />
+            {/* <Carousel className="w-full">
               <CarouselContent>
                 {videos.map((video, index) => (
                   <CarouselItem key={index}>
@@ -153,12 +155,12 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
               </CarouselContent>
               <CarouselPrevious className="hidden sm:flex" />
               <CarouselNext className="hidden sm:flex" />
-            </Carousel>
+            </Carousel> */}
           </div>
 
         {featuredCruises.length > 0 && (
           <section id="featured-offers" className="mb-16">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">Featured Cruises</h2>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">Exclusive Offers</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {featuredCruises.map(offer => (
                   <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />

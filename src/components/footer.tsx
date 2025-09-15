@@ -1,7 +1,7 @@
 
 export function Footer() {
   return (
-    <footer className="w-full text-center p-4 mt-8 text-sm text-muted-foreground">
+    <footer className="w-full text-center p-4 mt-8 border-t-4 text-sm text-muted-foreground">
       <p>&copy; {new Date().getFullYear()} Get That Cruise. All Rights Reserved.</p>
       <p> All cruises shown are subject to availability. Prices are per person based on double occupancy, they are subject to change and may vary without notice. </p>
       <p> These offers are valid on new bookings only, on selected sailings and subject to availability by MSC Cruises.</p>
