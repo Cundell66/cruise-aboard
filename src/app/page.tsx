@@ -5,8 +5,6 @@ import { type CruiseOffer } from "@/components/offer-card";
 import { LandingPageClient } from '@/components/landing-page-client';
 import { FaqItem } from '@/components/faq-section';
 
-export const dynamic = 'force-dynamic';
-
 interface FeaturedCruiseInfo {
   vendor_id: string;
   offerPrice: number;
@@ -31,35 +29,16 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
 
   // Read and parse itinerary images and titles
   const itineraryImagesFilePath = path.join(process.cwd(), 'src', 'lib', 'itinerary-images.json');
-  let itineraryDataMap = new Map();
-  try {
-    const itineraryImagesJsonData = fs.readFileSync(itineraryImagesFilePath, 'utf-8');
-    const itineraryImagesData = JSON.parse(itineraryImagesJsonData);
-    if (itineraryImagesData && itineraryImagesData.itineraries) {
-      itineraryDataMap = new Map(itineraryImagesData.itineraries.map((item: ItineraryInfo) => [item.vendor_id, { imageUrl: item.imageUrl, title: item.title }]));
-    }
-  } catch (error) {
-    console.error("Could not read or parse itinerary-images.json", error);
-    itineraryDataMap = new Map();
-  }
-
+  const itineraryImagesJsonData = fs.readFileSync(itineraryImagesFilePath, 'utf-8');
+  const itineraryImagesData = JSON.parse(itineraryImagesJsonData);
+  const itineraryDataMap = new Map(itineraryImagesData.itineraries.map((item: ItineraryInfo) => [item.vendor_id, { imageUrl: item.imageUrl, title: item.title }]));
 
   // Read and parse featured cruises
   const featuredCruisesFilePath = path.join(process.cwd(), 'src', 'lib', 'featured-cruises.json');
-  let featuredCruiseMap = new Map();
-  let featuredVendorIds = new Set();
-  try {
-    const featuredCruisesJsonData = fs.readFileSync(featuredCruisesFilePath, 'utf-8');
-    const featuredCruisesData = JSON.parse(featuredCruisesJsonData);
-    if (featuredCruisesData && featuredCruisesData.featured) {
-        featuredCruiseMap = new Map(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks, comments: item.comments }]));
-        featuredVendorIds = new Set(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => item.vendor_id));
-    }
-  } catch (error) {
-    console.error("Could not read or parse featured-cruises.json", error);
-    featuredCruiseMap = new Map();
-    featuredVendorIds = new Set();
-  }
+  const featuredCruisesJsonData = fs.readFileSync(featuredCruisesFilePath, 'utf-8');
+  const featuredCruisesData = JSON.parse(featuredCruisesJsonData);
+  const featuredCruiseMap = new Map(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks, comments: item.comments }]));
+  const featuredVendorIds = new Set(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => item.vendor_id));
 
 
   const baseUrl = `https://www.widgety.co.uk/api/cruises.json?operator=msc-cruises&start_from=Southampton&token=${token}&app_id=${appId}&page=`;
@@ -77,6 +56,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
     while (hasMorePages && currentPage <= maxPages) {
       const response = await fetch(`${baseUrl}${currentPage}`, {
         headers,
+        next: { revalidate: 3600 }, // Revalidate cache every hour
       });
 
       if (!response.ok) {
@@ -98,16 +78,14 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
     const allCruises: CruiseOffer[] = allCruisesFromApi
       .filter((cruise: any) => cruise.starts_at === 'Southampton' && cruise.cruise_only_price && parseFloat(cruise.cruise_only_price) > 0)
       .map((cruise: any, index: number) => {
-        const originalPrice = parseFloat(cruise.cruise_only_price);
+        const originalPrice = parseFloat(cruise.cruise_only_price) || 0;
         const itineraryInfo = itineraryDataMap.get(cruise.vendor_id);
         const imageUrl = itineraryInfo?.imageUrl || 'https://placehold.co/600x400.jpg';
         const title = itineraryInfo?.title || cruise.ship_title;
-        const formattedDestinations = cruise.name && typeof cruise.name === 'string'
-          ? cruise.name
-            .split(',')
-            .filter((destination: string) => destination.trim().toLowerCase() !== 'southampton' && destination.trim().toLowerCase() !== 'united kingdom')
-            .join('<span class="text-blue-600 mx-1">● </span>')
-          : "Various destinations";
+        const formattedDestinations = cruise.name
+          ?.split(',')
+          .filter((destination: string) => destination.trim().toLowerCase() !== 'southampton' && destination.trim().toLowerCase() !== 'united kingdom')
+          .join('<span class="text-blue-600 mx-1">● </span>') || '';
 
         return {
           id: cruise.vendor_id || index,
@@ -166,11 +144,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
     return { featuredCruises, allCruises };
 
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      console.error('API fetch timed out:', error);
-    } else {
-      console.error('Failed to fetch and process cruise offers:', error);
-    }
+    console.error('Failed to fetch and process cruise offers:', error);
     return { featuredCruises: [], allCruises: [] };
   }
 }
@@ -180,13 +154,8 @@ export default async function LandingPage() {
   const { featuredCruises, allCruises } = await getCruiseData();
 
   const faqFilePath = path.join(process.cwd(), 'src', 'lib', 'faq-data.json');
-  let faqItems: FaqItem[] = [];
-  try {
-    const faqJsonData = fs.readFileSync(faqFilePath, 'utf-8');
-    faqItems = JSON.parse(faqJsonData);
-  } catch (error) {
-    console.error("Could not read or parse faq-data.json", error);
-  }
+  const faqJsonData = fs.readFileSync(faqFilePath, 'utf-8');
+  const faqItems: FaqItem[] = JSON.parse(faqJsonData);
 
 
   return <LandingPageClient featuredCruises={featuredCruises} allCruises={allCruises} faqItems={faqItems} />;
