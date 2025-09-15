@@ -4,7 +4,8 @@
     {
       "vendor_id": "VI20260530SOUSOU",
       "drinks":"included",
-      "offerPrice": 822
+      "offerPrice": 888,
+      "comments":"Based on Deluxe Interior - Fantastica"
     },
     {
       "vendor_id": "PO20251219SOUSOU",
@@ -13,7 +14,8 @@
     {
       "vendor_id": "VI20260820SOUSOU",
       "drinks":"included",
-      "offerPrice": 1505
+      "offerPrice": 1628,
+      "comments":"Based on Deluxe Interior - Fantastica"
     }
   ]
 }

@@ -9,6 +9,7 @@ interface FeaturedCruiseInfo {
   vendor_id: string;
   offerPrice: number;
   drinks?: 'included' | 'available';
+  comments?: string;
 }
 
 interface ItineraryInfo {
@@ -36,7 +37,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
   const featuredCruisesFilePath = path.join(process.cwd(), 'src', 'lib', 'featured-cruises.json');
   const featuredCruisesJsonData = fs.readFileSync(featuredCruisesFilePath, 'utf-8');
   const featuredCruisesData = JSON.parse(featuredCruisesJsonData);
-  const featuredCruiseMap = new Map(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks }]));
+  const featuredCruiseMap = new Map(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks, comments: item.comments }]));
   const featuredVendorIds = new Set(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => item.vendor_id));
 
 
@@ -118,13 +119,21 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
           const drinksText = `<strong>Premium Drinks ${drinksIncluded ? 'Included' : 'Available'}</strong>`;
 
           // Clone the cruise object to avoid mutating the original in the allCruises list
-          const featuredCruise = { ...cruise };
+          const featuredCruise = { ...cruise, details: [...cruise.details] }; // Deep copy details
           featuredCruise.discountedPrice = featuredInfo.offerPrice;
           featuredCruise.drinksIncluded = drinksIncluded;
           
-          // Replace the default drinks text with the specific one for the feature
-          const detailsWithoutDrinks = featuredCruise.details.filter(detail => !detail.includes("Premium Drinks"));
-          featuredCruise.details = [...detailsWithoutDrinks.slice(0, 4), drinksText, ...detailsWithoutDrinks.slice(4)];
+          // Find and replace the default drinks text
+          const drinksIndex = featuredCruise.details.findIndex(detail => detail.includes("Premium Drinks"));
+          if (drinksIndex !== -1) {
+              featuredCruise.details[drinksIndex] = drinksText;
+          }
+
+          // Find and replace the Voyager Discount text if comments exist
+          const voyagerIndex = featuredCruise.details.findIndex(detail => detail.includes("Voyager Discount"));
+          if (voyagerIndex !== -1 && featuredInfo.comments) {
+              featuredCruise.details[voyagerIndex] = featuredInfo.comments;
+          }
 
           return featuredCruise;
       });
