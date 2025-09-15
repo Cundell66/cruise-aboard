@@ -20,6 +20,20 @@ interface ItineraryInfo {
   title: string;
 }
 
+async function fetchWithTimeout(url: string, options: RequestInit, timeout = 8000): Promise<Response> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  const response = await fetch(url, {
+    ...options,
+    signal: controller.signal  
+  });
+
+  clearTimeout(id);
+
+  return response;
+}
+
 async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCruises: CruiseOffer[] }> {
   const token = process.env.TOKEN;
   const appId = process.env.APPID;
@@ -40,6 +54,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
     }
   } catch (error) {
     console.error("Could not read or parse itinerary-images.json", error);
+    itineraryDataMap = new Map();
   }
 
 
@@ -56,6 +71,8 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
     }
   } catch (error) {
     console.error("Could not read or parse featured-cruises.json", error);
+    featuredCruiseMap = new Map();
+    featuredVendorIds = new Set();
   }
 
 
@@ -68,16 +85,19 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
   let allCruisesFromApi: any[] = [];
   let currentPage = 1;
   let hasMorePages = true;
+  const maxPages = 10; // Safety break to prevent infinite loops
 
   try {
-    while (hasMorePages) {
-      const response = await fetch(`${baseUrl}${currentPage}`, {
+    while (hasMorePages && currentPage <= maxPages) {
+      console.log(`Fetching page ${currentPage}...`);
+      const response = await fetchWithTimeout(`${baseUrl}${currentPage}`, {
         headers,
-        next: { revalidate: 3600 } // Revalidate every hour
       });
 
       if (!response.ok) {
-        throw new Error(`API call failed with status: ${response.status} on page ${currentPage}`);
+        console.error(`API call failed for page ${currentPage} with status: ${response.status}`);
+        // Stop pagination on first error
+        break; 
       }
 
       const data = await response.json();
@@ -89,6 +109,8 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
         hasMorePages = false;
       }
     }
+
+    console.log(`Fetched a total of ${allCruisesFromApi.length} cruises from the API.`);
 
     const allCruises: CruiseOffer[] = allCruisesFromApi
       .filter((cruise: any) => cruise.starts_at === 'Southampton' && cruise.cruise_only_price && parseFloat(cruise.cruise_only_price) > 0)
@@ -159,7 +181,11 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
     return { featuredCruises, allCruises };
 
   } catch (error) {
-    console.error('Failed to fetch cruise offers:', error);
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.error('API fetch timed out:', error);
+    } else {
+      console.error('Failed to fetch and process cruise offers:', error);
+    }
     return { featuredCruises: [], allCruises: [] };
   }
 }
