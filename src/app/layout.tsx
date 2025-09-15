@@ -4,6 +4,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
+import { Analytics } from '@/components/analytics';
+import { CookieConsentBanner } from '@/components/cookie-consent-banner';
 
 export const metadata: Metadata = {
   title: 'Get That Cruise',
@@ -28,6 +30,8 @@ export default function RootLayout({
         {children}
         <Footer />
         <Toaster />
+        <CookieConsentBanner />
+        <Analytics />
       </body>
     </html>
   );
