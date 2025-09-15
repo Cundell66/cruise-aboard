@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShipStats } from "@/components/ship-stats";
 import { Ship, Users, BedDouble, UserCog, Gauge, Ruler, Weight } from "lucide-react";
+import { DeckplanSection } from "@/components/deckplan-section";
 
 const video = {
   ship: 'MSC Poesia',
@@ -40,10 +41,10 @@ export default function MscPoesiaPage() {
            <div className="text-muted-foreground space-y-4">
             <h2 className="font-headline text-2xl font-semibold text-primary/90 mt-6">About the Ship</h2>
             <p>
-              [Placeholder for details about MSC Poesia. You can describe the ship's features, amenities, dining options, entertainment, and more here.]
+              <strong>Balconies to the world</strong>
             </p>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl nec ultricies lacinia, nisl nisl aliquet nisl, eget aliquam nisl nisl sit amet nisl.
+              MSC Poesia is an innovative cruise ship with an elegant style that brings traditional craftsmanship to creative designs. Step aboard and you’ll enter a refined world of comfort. Whether your reason for being on board is a family holiday, a luxury treat or a romantic escape, MSC Poesia is a ship that offers a truly inspiring cruise experience.
             </p>
           </div>
            <ShipStats 
@@ -51,8 +52,10 @@ export default function MscPoesiaPage() {
             subtitle="Discover how many details make your experience so great."
             stats={shipStats}
           />
+          <DeckplanSection pdfUrl="/msc-poesia-deckplan.pdf" />
         </CardContent>
       </Card>
+
     </main>
   );
 }

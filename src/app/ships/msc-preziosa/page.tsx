@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShipStats } from "@/components/ship-stats";
 import { Ship, Users, BedDouble, UserCog, Gauge, Ruler, Weight } from "lucide-react";
+import { DeckplanSection } from "@/components/deckplan-section";
 
 const video = {
   ship: 'MSC Preziosa',
@@ -51,6 +52,7 @@ export default function MscPreziosaPage() {
             subtitle="Discover how many details make your experience so great."
             stats={shipStats}
           />
+          <DeckplanSection pdfUrl="/msc-preziosa-deckplan.pdf" />
         </CardContent>
       </Card>
     </main>
