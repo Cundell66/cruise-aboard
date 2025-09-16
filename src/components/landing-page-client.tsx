@@ -123,13 +123,13 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
             <Ship className="w-8 h-8 md:w-10 md:h-10 text-primary" />
           </div>
           <p className="font-body text-lg text-muted-foreground">
-            The lowest MSC prices on the market.
+            Get a personalized quote for your dream cruise.
           </p>
         </header>
 
         <div className="mb-12 max-w-3xl mx-auto text-2xl text-muted-foreground text-center font-headline">
           <strong>Cruise Week - An EXTRA 5% Off All Listed Prices</strong>
-          <img src="/cruise-week.jpg" />
+          <img src="/cruise-week.jpg" alt="Cruise Week Monday 15 - Sunday 21 September 2025" />
             {/* <Carousel className="w-full">
               <CarouselContent>
                 {videos.map((video, index) => (

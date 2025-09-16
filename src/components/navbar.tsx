@@ -19,7 +19,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
+import { useState } from "react";
 
 
 const shipLinks = [
@@ -28,16 +29,13 @@ const shipLinks = [
   { href: "/ships/msc-preziosa", label: "MSC Preziosa" },
 ];
 
-const mainNavLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
-  { href: "/terms", label: "Terms & Conditions" },
-  { href: "/privacy", label: "Privacy Policy" },
-  { href: "/cookies", label: "Cookie Policy" },
-];
-
 export function Navbar() {
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleLinkClick = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   const DesktopNavLinks = () => (
     <>
@@ -68,6 +66,16 @@ export function Navbar() {
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <Link
+        href="/articles"
+        className={cn(
+          "text-sm font-medium transition-colors hover:text-primary-foreground/80",
+          pathname.startsWith("/articles") ? "text-white" : "text-primary-foreground/60"
+        )}
+      >
+        Articles
+      </Link>
 
       <Link
         href="/about"
@@ -110,33 +118,22 @@ export function Navbar() {
 
   const MobileNavLinks = () => (
     <>
-        <SheetClose asChild>
-          <Link href="/" className={cn("block py-2 text-lg font-medium", pathname === "/" ? "text-white" : "text-primary-foreground/60")}>Home</Link>
-        </SheetClose>
+        <Link href="/" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/" ? "text-white" : "text-primary-foreground/60")}>Home</Link>
         <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="ships" className="border-b-0">
                 <AccordionTrigger className={cn("py-2 text-lg font-medium hover:no-underline", pathname.startsWith("/ships") ? "text-white" : "text-primary-foreground/60")}>Ships</AccordionTrigger>
                 <AccordionContent className="pb-0 pl-4">
                     {shipLinks.map(({ href, label }) => (
-                         <SheetClose asChild key={href}>
-                           <Link href={href} className="block py-2 text-lg font-medium text-primary-foreground/60">{label}</Link>
-                         </SheetClose>
+                       <Link href={href} key={href} onClick={handleLinkClick} className="block py-2 text-lg font-medium text-primary-foreground/60">{label}</Link>
                     ))}
                 </AccordionContent>
             </AccordionItem>
         </Accordion>
-        <SheetClose asChild>
-          <Link href="/about" className={cn("block py-2 text-lg font-medium", pathname === "/about" ? "text-white" : "text-primary-foreground/60")}>About Us</Link>
-        </SheetClose>
-        <SheetClose asChild>
-          <Link href="/terms" className={cn("block py-2 text-lg font-medium", pathname === "/terms" ? "text-white" : "text-primary-foreground/60")}>Terms & Conditions</Link>
-        </SheetClose>
-        <SheetClose asChild>
-          <Link href="/privacy" className={cn("block py-2 text-lg font-medium", pathname === "/privacy" ? "text-white" : "text-primary-foreground/60")}>Privacy Policy</Link>
-        </SheetClose>
-        <SheetClose asChild>
-          <Link href="/cookies" className={cn("block py-2 text-lg font-medium", pathname === "/cookies" ? "text-white" : "text-primary-foreground/60")}>Cookie Policy</Link>
-        </SheetClose>
+        <Link href="/articles" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname.startsWith("/articles") ? "text-white" : "text-primary-foreground/60")}>Articles</Link>
+        <Link href="/about" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/about" ? "text-white" : "text-primary-foreground/60")}>About Us</Link>
+        <Link href="/terms" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/terms" ? "text-white" : "text-primary-foreground/60")}>Terms & Conditions</Link>
+        <Link href="/privacy" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/privacy" ? "text-white" : "text-primary-foreground/60")}>Privacy Policy</Link>
+        <Link href="/cookies" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/cookies" ? "text-white" : "text-primary-foreground/60")}>Cookie Policy</Link>
     </>
   );
 
@@ -157,7 +154,7 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         <div className="md:hidden">
-          <Sheet>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Menu className="h-6 w-6 text-primary-foreground" />
@@ -166,12 +163,10 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="left" className="bg-primary text-primary-foreground">
               <div className="grid gap-6 p-6">
-                 <SheetClose asChild>
-                  <Link href="/" className="flex items-center gap-2">
+                 <Link href="/" onClick={handleLinkClick} className="flex items-center gap-2">
                       <Image src="/logo.png" alt="Get That Cruise Logo" width={32} height={32} />
                       <span className="font-bold">Get That Cruise</span>
                   </Link>
-                </SheetClose>
                 <nav className="grid gap-4">
                   <MobileNavLinks />
                 </nav>

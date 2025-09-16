@@ -9,7 +9,7 @@ import { CookieConsentBanner } from '@/components/cookie-consent-banner';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Get That Cruise',
+  title: 'Get That Cruise - MSC Cruises From Southampton',
   description: 'Get a personalized quote for your dream cruise.',
 };
 
