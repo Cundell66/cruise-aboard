@@ -14,13 +14,18 @@ const EnquirySchema = z.object({
   adults: z.string().min(1, "Please select the number of adults."),
   children: z.string().min(1, "Please select the number of children."),
   vendorId: z.string().optional(),
+  cabinType: z.string().min(1, "Please select a cabin type."),
+  experience: z.string().min(1, "Please select an experience."),
+  drinksPackage: z.enum(["yes", "no"]),
+  sailedWithMsc: z.enum(["yes", "no"]),
+  hasVoyagersNumber: z.enum(["yes", "no", "not_sure"]).optional(),
+  voyagersNumber: z.string().optional(),
+  voyagersInfo: z.string().optional(),
 });
 
 async function sendEnquiryEmail(data: z.infer<typeof EnquirySchema>) {
   if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS || !process.env.ENQUIRY_RECIPIENT_EMAIL) {
     console.warn("SMTP environment variables not set. Skipping email dispatch. Please configure them in your .env file.");
-    // In a production scenario, you might want to throw an error here.
-    // For this demo, we'll allow it to proceed to show the AI suggestions.
     return;
   }
 
@@ -42,12 +47,27 @@ async function sendEnquiryEmail(data: z.infer<typeof EnquirySchema>) {
       <h1>New Cruise Enquiry</h1>
       <p><strong>Name:</strong> ${data.name}</p>
       <p><strong>Email:</strong> ${data.email}</p>
+      <hr>
+      <h2>Cruise Details</h2>
       <p><strong>Ship:</strong> ${data.ship}</p>
       <p><strong>Desired Dates:</strong> ${data.departureDates}</p>
       <p><strong>Destination:</strong> ${data.destination}</p>
+      ${data.vendorId ? `<p><strong>Vendor ID:</strong> ${data.vendorId}</p>` : ''}
+      <hr>
+      <h2>Passenger & Preference Details</h2>
       <p><strong>Adults:</strong> ${data.adults}</p>
       <p><strong>Children:</strong> ${data.children}</p>
-      ${data.vendorId ? `<p><strong>Vendor ID:</strong> ${data.vendorId}</p>` : ''}
+      <p><strong>Cabin Type:</strong> ${data.cabinType}</p>
+      <p><strong>Experience:</strong> ${data.experience}</p>
+      <p><strong>Drinks Package:</strong> ${data.drinksPackage === 'yes' ? 'Yes' : 'No'}</p>
+      <hr>
+      <h2>MSC Voyagers Club</h2>
+      <p><strong>Sailed with MSC before:</strong> ${data.sailedWithMsc === 'yes' ? 'Yes' : 'No'}</p>
+      ${data.sailedWithMsc === 'yes' ? `
+        <p><strong>Has Voyagers Club number:</strong> ${data.hasVoyagersNumber || 'Not specified'}</p>
+        ${data.hasVoyagersNumber === 'yes' && data.voyagersNumber ? `<p><strong>Voyagers Club Number:</strong> ${data.voyagersNumber}</p>` : ''}
+        ${data.hasVoyagersNumber === 'not_sure' && data.voyagersInfo ? `<p><strong>Client Info for lookup:</strong> ${data.voyagersInfo}</p>` : ''}
+      ` : ''}
     `,
   };
 
@@ -59,8 +79,7 @@ export async function submitEnquiry(formData: unknown): Promise<{ success: boole
   const parsed = EnquirySchema.safeParse(formData);
 
   if (!parsed.success) {
-    // This server-side validation is a fallback.
-    // The client-side form should prevent this from being reached with valid use.
+    console.error('Form validation failed:', parsed.error.flatten().fieldErrors);
     return { success: false, error: 'Invalid form data. Please check your entries and try again.' };
   }
     
