@@ -58,7 +58,6 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
     while (hasMorePages && currentPage <= maxPages) {
       const response = await fetch(`${baseUrl}${currentPage}`, {
         headers,
-        next: { revalidate: 3600 }, // Revalidate cache every hour
       });
 
       if (!response.ok) {
@@ -83,7 +82,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
         const originalPrice = parseFloat(cruise.cruise_only_price) || 0;
         const itineraryInfo = itineraryDataMap.get(cruise.vendor_id);
         const imageUrl = itineraryInfo?.imageUrl || 'https://placehold.co/600x400.jpg';
-        const title = itineraryInfo?.title || cruise.ship_title;
+        const title = itineraryInfo?.title || cruise.ship_title || '';
         const formattedDestinations = cruise.name
           ?.split(',')
           .filter((destination: string) => destination.trim().toLowerCase() !== 'southampton' && destination.trim().toLowerCase() !== 'united kingdom')
@@ -106,7 +105,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
           ],
           originalPrice: originalPrice,
           discountedPrice: Math.round(originalPrice * 0.9),
-          ship: cruise.ship_title,
+          ship: cruise.ship_title || '',
           destination: cruise.name || 'Various',
           departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
         };
@@ -118,25 +117,21 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
       .filter(cruise => featuredVendorIds.has(String(cruise.id)))
       .map(cruise => {
           const featuredInfo = featuredCruiseMap.get(String(cruise.id));
-          // If there's no featured info for this cruise, return it as is.
           if (!featuredInfo) return cruise;
 
-          // Create a clone to avoid modifying the object in the allCruises list
           const featuredCruise = { ...cruise, details: [...cruise.details] };
           
           featuredCruise.discountedPrice = featuredInfo.offerPrice;
           const drinksIncluded = featuredInfo.drinks === 'included';
           featuredCruise.drinksIncluded = drinksIncluded;
           
-          // Find and replace the default drinks text
-          const drinksIndex = featuredCruise.details.findIndex(detail => detail.includes("Premium Drinks"));
+          const drinksIndex = featuredCruise.details.findIndex(detail => detail?.includes("Premium Drinks"));
           if (drinksIndex !== -1) {
               const drinksText = `<strong>Premium Drinks ${drinksIncluded ? 'Included' : 'Available'}</strong>`;
               featuredCruise.details[drinksIndex] = drinksText;
           }
 
-          // Find and replace the Voyager Discount text if comments exist
-          const voyagerIndex = featuredCruise.details.findIndex(detail => detail.includes("Voyager Discount"));
+          const voyagerIndex = featuredCruise.details.findIndex(detail => detail?.includes("Voyager Discount"));
           if (voyagerIndex !== -1 && featuredInfo.comments) {
               featuredCruise.details[voyagerIndex] = featuredInfo.comments;
           }
