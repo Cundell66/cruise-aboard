@@ -128,9 +128,9 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
         </header>
 
         <div className="mb-12 max-w-3xl mx-auto text-2xl text-muted-foreground text-center font-headline">
-          <strong>Cruise Week - An EXTRA 5% Off All Listed Prices</strong>
-          <img src="/cruise-week.jpg" alt="Cruise Week Monday 15 - Sunday 21 September 2025" />
-            {/* <Carousel className="w-full">
+          {/* <strong>Cruise Week - An EXTRA 5% Off All Listed Prices</strong>
+          <img src="/cruise-week.jpg" alt="Cruise Week Monday 15 - Sunday 21 September 2025" /> */}
+            <Carousel className="w-full">
               <CarouselContent>
                 {videos.map((video, index) => (
                   <CarouselItem key={index}>
@@ -155,7 +155,7 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
               </CarouselContent>
               <CarouselPrevious className="hidden sm:flex" />
               <CarouselNext className="hidden sm:flex" />
-            </Carousel> */}
+            </Carousel>
           </div>
 
         {featuredCruises.length > 0 && (
