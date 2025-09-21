@@ -160,7 +160,7 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
 
         {featuredCruises.length > 0 && (
           <section id="featured-offers" className="mb-16">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">Exclusive Offers</h2>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">Featured Offers</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {featuredCruises.map(offer => (
                   <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />
