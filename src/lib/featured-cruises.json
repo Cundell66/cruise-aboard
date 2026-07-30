@@ -2,21 +2,21 @@
 {
   "featured": [
     {
-      "vendor_id": "VI20260530SOUSOU",
+      "vendor_id": "MR20270529SOUSOU",
       "drinks":"included",
-      "offerPrice": 989,
+      "offerPrice": 979,
       "comments":"Based on Basic Interior - Bella"
     },
     {
-      "vendor_id": "PO20251219SOUSOU",
+      "vendor_id": "PR20261218SOUSOU",
       "drinks":"included",
-      "offerPrice": 1349,
+      "offerPrice": 847,
       "comments":"Based on Deluxe Interior - Fantastica"
     },
     {
       "vendor_id": "VI20260820SOUSOU",
       "drinks":"included",
-      "offerPrice": 1799,
+      "offerPrice": 1371,
       "comments":"Based on Deluxe Interior - Fantastica"
     }
   ]
