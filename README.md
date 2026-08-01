@@ -4,4 +4,4 @@ This is a NextJS starter in Firebase Studio.
 
 To get started, take a look at src/app/page.tsx.
 
-added all round trip itinerary images
+Update image codes for 8 MSC Southampton repositioning sailings
