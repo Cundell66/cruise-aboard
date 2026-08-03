@@ -33,13 +33,13 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
   const itineraryImagesFilePath = path.join(process.cwd(), 'src', 'lib', 'itinerary-images.json');
   const itineraryImagesJsonData = fs.readFileSync(itineraryImagesFilePath, 'utf-8');
   const itineraryImagesData = JSON.parse(itineraryImagesJsonData);
-  const itineraryDataMap = new Map(itineraryImagesData.itineraries.map((item: ItineraryInfo) => [item.vendor_id, { imageUrl: item.imageUrl, title: item.title }]));
+  const itineraryDataMap = new Map<string, { imageUrl: string; title: string }>(itineraryImagesData.itineraries.map((item: ItineraryInfo) => [item.vendor_id, { imageUrl: item.imageUrl, title: item.title }]));
 
   // Read and parse featured cruises
   const featuredCruisesFilePath = path.join(process.cwd(), 'src', 'lib', 'featured-cruises.json');
   const featuredCruisesJsonData = fs.readFileSync(featuredCruisesFilePath, 'utf-8');
   const featuredCruisesData = JSON.parse(featuredCruisesJsonData);
-  const featuredCruiseMap = new Map(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks, comments: item.comments }]));
+  const featuredCruiseMap = new Map<string, { offerPrice: number; drinks?: 'included' | 'available'; comments?: string }>(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks, comments: item.comments }]));
   const featuredVendorIds = new Set(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => item.vendor_id));
 
 

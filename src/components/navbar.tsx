@@ -141,9 +141,9 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-primary shadow-sm">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Get That Cruise Logo" width={40} height={40} className="rounded-md" />
+          <Image src="/cruise-aboard-logo.png" alt="Cruise Aboard Logo" width={40} height={40} className="rounded-md" />
           <span className="hidden font-bold text-primary-foreground sm:inline-block">
-            Get That Cruise
+            Cruise Aboard
           </span>
         </Link>
 
@@ -164,8 +164,8 @@ export function Navbar() {
             <SheetContent side="left" className="bg-primary text-primary-foreground">
               <div className="grid gap-6 p-6">
                  <Link href="/" onClick={handleLinkClick} className="flex items-center gap-2">
-                      <Image src="/logo.png" alt="Get That Cruise Logo" width={32} height={32} />
-                      <span className="font-bold">Get That Cruise</span>
+                      <Image src="/cruise-aboard-logo.png" alt="Cruise Aboard Logo" width={32} height={32} />
+                      <span className="font-bold">Cruise Aboard</span>
                   </Link>
                 <nav className="grid gap-4">
                   <MobileNavLinks />

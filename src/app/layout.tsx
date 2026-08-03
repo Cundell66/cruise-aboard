@@ -9,8 +9,8 @@ import { CookieConsentBanner } from '@/components/cookie-consent-banner';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Get That Cruise - MSC Cruises From Southampton',
-  description: 'Get a personalized quote for your dream cruise.',
+  title: 'Cruise Aboard - MSC Cruises From Southampton',
+  description: 'Premium personal service for your dream MSC cruise. Browsable itineraries, honest advice and quotes with no jargon - from Charlie at Cruise Aboard.',
 };
 
 export default function RootLayout({

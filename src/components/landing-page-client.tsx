@@ -118,7 +118,7 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
           <div className="flex justify-center items-center gap-4 mb-2">
             <Anchor className="w-8 h-8 md:w-10 md:h-10 text-primary" />
             <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary/90">
-              Get That Cruise
+              Cruise Aboard
             </h1>
             <Ship className="w-8 h-8 md:w-10 md:h-10 text-primary" />
           </div>

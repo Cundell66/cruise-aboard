@@ -114,7 +114,7 @@ export default function TermsPage() {
             </p>
             <p><strong>
             20. Entire agreement</strong> <br />
-            These Terms and Conditions, together with our privacy statement and cookie policy, constitute the entire agreement between you and Get That Cruise in relation to your use of this website.
+            These Terms and Conditions, together with our privacy statement and cookie policy, constitute the entire agreement between you and Cruise Aboard in relation to your use of this website.
             </p>
             <p><strong>
             21. Updating of these Terms and conditions</strong> <br />
@@ -126,7 +126,7 @@ export default function TermsPage() {
             </p>
             <p><strong>
             23. Contact information</strong> <br />
-            You may contact us regarding these Terms and Conditions by emailing us at the following address: admin@getthatcruise.co.uk
+            You may contact us regarding these Terms and Conditions by emailing us at the following address: admin@cruiseaboard.co.uk
          </p>
         </CardContent>
       </Card>

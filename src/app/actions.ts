@@ -40,7 +40,7 @@ async function sendEnquiryEmail(data: z.infer<typeof EnquirySchema>) {
   });
 
   const mailOptions = {
-    from: `"Get That Cruise Enquiry" <${process.env.SMTP_USER}>`,
+    from: `"Cruise Aboard Enquiry" <${process.env.SMTP_USER}>`,
     to: process.env.ENQUIRY_RECIPIENT_EMAIL, // Can be a comma-separated list
     subject: `New Cruise Enquiry from ${data.name}`,
     html: `

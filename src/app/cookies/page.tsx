@@ -17,7 +17,7 @@ export default function CookiesPage() {
           This Cookie Policy was last updated on June 18, 2025 and applies to citizens and legal permanent residents of the United Kingdom.
           <br />
             1. Introduction
-            <br />  Our website, https://getthatcruise.co.uk (hereinafter: “the website”) uses cookies and other related technologies (for convenience all technologies are referred to as “cookies”). Cookies are also placed by third parties we have engaged. In the document below we inform you about the use of cookies on our website.
+            <br />  Our website, https://cruiseaboard.co.uk (hereinafter: “the website”) uses cookies and other related technologies (for convenience all technologies are referred to as “cookies”). Cookies are also placed by third parties we have engaged. In the document below we inform you about the use of cookies on our website.
 
             <br />2. What are cookies?
             <br />A cookie is a small simple file that is sent along with pages of this website and stored by your browser on the hard drive of your computer or another device. The information stored therein may be returned to our servers or to the servers of the relevant third parties during a subsequent visit.
@@ -75,7 +75,7 @@ export default function CookiesPage() {
             <br />To exercise these rights, please contact us. Please refer to the contact details at the bottom of this Cookie Policy. If you have a complaint about how we handle your data, we would like to hear from you, but you also have the right to submit a complaint to the supervisory authority (the Information Commissioner’s Office (ICO)).
             <br />
             10. Contact details
-            <br />For questions and/or comments about our Cookie Policy and this statement, please contact us by emailing admin@getthatcruise.co.uk
+            <br />For questions and/or comments about our Cookie Policy and this statement, please contact us by emailing admin@cruiseaboard.co.uk
           </p>
         </CardContent>
       </Card>

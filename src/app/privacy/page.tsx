@@ -47,7 +47,7 @@ export default function PrivacyPage() {
             <br />
             How can you contact us?
             <br />
-            If you have any questions about this privacy notice or how we handle your personal information, please contact us at admin@getthatcruise.co.uk
+            If you have any questions about this privacy notice or how we handle your personal information, please contact us at admin@cruiseaboard.co.uk
             <br />
             If you do not think that we have processed your data in accordance with this notice you should let us know as soon as possible.
             <br />

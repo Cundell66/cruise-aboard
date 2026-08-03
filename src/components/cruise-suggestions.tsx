@@ -13,7 +13,7 @@ export function CruiseSuggestions({ suggestions }: CruiseSuggestionsProps) {
           <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
           <CardTitle className="font-headline text-3xl">Enquiry Sent!</CardTitle>
           <CardDescription className="max-w-md">
-            Thank you for your enquiry. We'll be in touch shortly with your personalized quote. For urgent queries, please contact admin@getthatcruise.co.uk.
+            Thank you for your enquiry. We'll be in touch shortly with your personalized quote. For urgent queries, please contact admin@cruiseaboard.co.uk.
           </CardDescription>
         </CardHeader>
         {suggestions && suggestions.length > 0 && (
