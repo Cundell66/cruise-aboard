@@ -1,8 +1,8 @@
 # Decap CMS configuration for Cruise Aboard
 # Admin lives at /admin/ on the deployed site.
 #
-# NOTE: the repo is PUBLIC, so we use implicit OAuth auth:
-#  - only a GitHub OAuth app Client ID is needed (no secret, no server endpoint)
+# NOTE: the repo is PUBLIC, so we use PKCE OAuth auth:
+#  - only the GitHub OAuth app Client ID is needed (no secret, no server endpoint)
 #  - create one at https://github.com/settings/developers > OAuth Apps
 #    - Homepage URL: https://cruise-aboard.vercel.app
 #    - Authorization callback URL: https://cruise-aboard.vercel.app/
@@ -12,7 +12,7 @@ backend:
   name: github
   repo: Cundell66/cruise-aboard
   branch: main
-  auth_type: implicit
+  auth_type: pkce
   app_id: Ov23ct55SGuJWNpF9IUo
 
 site_url: https://cruise-aboard.vercel.app
