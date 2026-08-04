@@ -13,7 +13,7 @@ backend:
   repo: Cundell66/cruise-aboard
   branch: main
   auth_type: implicit
-  app_id: PASTE_CLIENT_ID_HERE
+  app_id: Ov23ct55SGuJWNpF9IUo
 
 site_url: https://cruise-aboard.vercel.app
 display_url: https://cruise-aboard.vercel.app
