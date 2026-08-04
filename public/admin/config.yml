@@ -1,0 +1,96 @@
+# Decap CMS configuration for Cruise Aboard
+# Admin lives at /admin/ on the deployed site.
+#
+# NOTE: the repo is PUBLIC, so we use implicit OAuth auth:
+#  - only a GitHub OAuth app Client ID is needed (no secret, no server endpoint)
+#  - create one at https://github.com/settings/developers > OAuth Apps
+#    - Homepage URL: https://cruise-aboard.vercel.app
+#    - Authorization callback URL: https://cruise-aboard.vercel.app/
+#  - paste the Client ID below (replace PASTE_CLIENT_ID_HERE)
+
+backend:
+  name: github
+  repo: Cundell66/cruise-aboard
+  branch: main
+  auth_type: implicit
+  app_id: PASTE_CLIENT_ID_HERE
+
+site_url: https://cruise-aboard.vercel.app
+display_url: https://cruise-aboard.vercel.app
+logo_url: https://cruise-aboard.vercel.app/cruise-aboard-logo.png
+
+# Uploaded images are stored in the repo under public/images/uploads
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+collections:
+  - name: "articles"
+    label: "Blog Posts"
+    folder: "content/articles"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Slug", name: "slug", widget: "string", hint: "URL identifier, lowercase with hyphens, e.g. what-to-pack-for-a-cruise" }
+      - { label: "Author", name: "author", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Image URL", name: "imageUrl", widget: "string" }
+      - { label: "Image Alt Text", name: "imageAlt", widget: "string" }
+      - { label: "Image Hint", name: "imageHint", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "testimonials"
+    label: "Testimonials"
+    files:
+      - name: "testimonials"
+        label: "Testimonials"
+        file: "content/testimonials.json"
+        fields:
+          - label: "Testimonials"
+            name: "testimonials"
+            widget: "list"
+            fields:
+              - { label: "Quote", name: "quote", widget: "text" }
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Details", name: "details", widget: "string" }
+
+  - name: "faqs"
+    label: "FAQs"
+    files:
+      - name: "faqs"
+        label: "FAQs"
+        file: "content/faqs.json"
+        fields:
+          - label: "FAQs"
+            name: "faqs"
+            widget: "list"
+            fields:
+              - { label: "Question", name: "question", widget: "string" }
+              - { label: "Answer", name: "answer", widget: "text" }
+
+  - name: "featured-cruises"
+    label: "Featured Cruises"
+    files:
+      - name: "featured-cruises"
+        label: "Featured Cruises"
+        file: "content/featured-cruises.json"
+        fields:
+          - label: "Featured Cruises"
+            name: "featured"
+            widget: "list"
+            fields:
+              - { label: "Vendor ID", name: "vendor_id", widget: "string", hint: "Internal ID from the cruise feed, e.g. MR20270529SOUSOU" }
+              - { label: "Drinks", name: "drinks", widget: "select", options: ["included", "available"] }
+              - { label: "Offer Price", name: "offerPrice", widget: "number", hint: "Our price in GBP per person" }
+              - { label: "Comments", name: "comments", widget: "text" }
+
+  - name: "site-settings"
+    label: "Site Settings"
+    files:
+      - name: "site-settings"
+        label: "Site Settings"
+        file: "content/site-settings.json"
+        fields:
+          - { label: "Voyager Discount %", name: "voyagerDiscountPercent", widget: "number", hint: "Discount applied to MSC prices (e.g. 10 = 10% off)" }
+          - { label: "Voyager Discount Label", name: "voyagerDiscountLabel", widget: "string" }

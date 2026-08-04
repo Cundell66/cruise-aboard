@@ -36,11 +36,19 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
   const itineraryDataMap = new Map<string, { imageUrl: string; title: string }>(itineraryImagesData.itineraries.map((item: ItineraryInfo) => [item.vendor_id, { imageUrl: item.imageUrl, title: item.title }]));
 
   // Read and parse featured cruises
-  const featuredCruisesFilePath = path.join(process.cwd(), 'src', 'lib', 'featured-cruises.json');
+  const featuredCruisesFilePath = path.join(process.cwd(), 'content', 'featured-cruises.json');
   const featuredCruisesJsonData = fs.readFileSync(featuredCruisesFilePath, 'utf-8');
   const featuredCruisesData = JSON.parse(featuredCruisesJsonData);
   const featuredCruiseMap = new Map<string, { offerPrice: number; drinks?: 'included' | 'available'; comments?: string }>(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks, comments: item.comments }]));
   const featuredVendorIds = new Set(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => item.vendor_id));
+
+  // Read site settings (editable via Decap CMS)
+  const siteSettingsFilePath = path.join(process.cwd(), 'content', 'site-settings.json');
+  const siteSettingsJsonData = fs.readFileSync(siteSettingsFilePath, 'utf-8');
+  const siteSettings = JSON.parse(siteSettingsJsonData);
+  const discountPercent = siteSettings.voyagerDiscountPercent ?? 5;
+  const voyagerDiscountLabel = siteSettings.voyagerDiscountLabel ?? 'Voyager Discount available';
+  const discountFactor = (100 - discountPercent) / 100;
 
 
   const baseUrl = `https://www.widgety.co.uk/api/cruises.json?operator=msc-cruises&start_from=Southampton&token=${token}&app_id=${appId}&page=`;
@@ -101,10 +109,10 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
             formattedDestinations,
             "<strong>Premium Drinks Available</strong>",
             "Gratuities Included",
-            "Voyager Discount available"
+            voyagerDiscountLabel
           ],
           originalPrice: originalPrice,
-          discountedPrice: Math.round(originalPrice * 0.9),
+          discountedPrice: Math.round(originalPrice * discountFactor),
           ship: cruise.ship_title || '',
           destination: cruise.name || 'Various',
           departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
@@ -151,9 +159,9 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
 export default async function LandingPage() {
   const { featuredCruises, allCruises } = await getCruiseData();
 
-  const faqFilePath = path.join(process.cwd(), 'src', 'lib', 'faq-data.json');
+  const faqFilePath = path.join(process.cwd(), 'content', 'faqs.json');
   const faqJsonData = fs.readFileSync(faqFilePath, 'utf-8');
-  const faqItems: FaqItem[] = JSON.parse(faqJsonData);
+  const faqItems: FaqItem[] = JSON.parse(faqJsonData).faqs;
 
 
   return <LandingPageClient featuredCruises={featuredCruises} allCruises={allCruises} faqItems={faqItems} />;

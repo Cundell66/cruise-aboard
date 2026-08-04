@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import Link from 'next/link';
 import Image from 'next/image';
+import matter from 'gray-matter';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Newspaper, ArrowRight } from 'lucide-react';
@@ -20,16 +21,33 @@ interface Article {
   content: string;
 }
 
+const articlesDir = path.join(process.cwd(), 'content', 'articles');
+
 async function getArticles(): Promise<Article[]> {
-  const filePath = path.join(process.cwd(), 'src', 'lib', 'articles.json');
   try {
-    const data = await fs.readFile(filePath, 'utf-8');
-    const articles: Article[] = JSON.parse(data);
+    const files = (await fs.readdir(articlesDir)).filter((f) => f.endsWith('.md'));
+    const articles: Article[] = await Promise.all(
+      files.map(async (file) => {
+        const raw = await fs.readFile(path.join(articlesDir, file), 'utf-8');
+        const { data, content } = matter(raw);
+        return {
+          slug: data.slug || file.replace(/\.md$/, ''),
+          title: data.title || '',
+          author: data.author || '',
+          date: data.date || '',
+          excerpt: data.excerpt || '',
+          imageUrl: data.imageUrl || '',
+          imageAlt: data.imageAlt || '',
+          imageHint: data.imageHint || '',
+          content,
+        };
+      })
+    );
     // Sort articles by date in descending order
     articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     return articles;
   } catch (error) {
-    console.error('Failed to read or parse articles.json:', error);
+    console.error('Failed to read articles:', error);
     return [];
   }
 }

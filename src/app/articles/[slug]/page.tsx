@@ -1,6 +1,8 @@
 
 import fs from 'fs/promises';
 import path from 'path';
+import matter from 'gray-matter';
+import { marked } from 'marked';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -21,14 +23,14 @@ interface Article {
   content: string;
 }
 
+const articlesDir = path.join(process.cwd(), 'content', 'articles');
+
 // This function tells Next.js which slugs to pre-render at build time.
 export async function generateStaticParams() {
-  const filePath = path.join(process.cwd(), 'src', 'lib', 'articles.json');
   try {
-    const data = await fs.readFile(filePath, 'utf-8');
-    const articles: Article[] = JSON.parse(data);
-    return articles.map((article) => ({
-      slug: article.slug,
+    const files = (await fs.readdir(articlesDir)).filter((f) => f.endsWith('.md'));
+    return files.map((file) => ({
+      slug: file.replace(/\.md$/, ''),
     }));
   } catch (error) {
     console.error('Could not read articles for static params:', error);
@@ -37,13 +39,23 @@ export async function generateStaticParams() {
 }
 
 async function getArticle(slug: string): Promise<Article | undefined> {
-  const filePath = path.join(process.cwd(), 'src', 'lib', 'articles.json');
+  const filePath = path.join(articlesDir, `${slug}.md`);
   try {
-    const data = await fs.readFile(filePath, 'utf-8');
-    const articles: Article[] = JSON.parse(data);
-    return articles.find((article) => article.slug === slug);
+    const raw = await fs.readFile(filePath, 'utf-8');
+    const { data, content } = matter(raw);
+    return {
+      slug: data.slug || slug,
+      title: data.title || '',
+      author: data.author || '',
+      date: data.date || '',
+      excerpt: data.excerpt || '',
+      imageUrl: data.imageUrl || '',
+      imageAlt: data.imageAlt || '',
+      imageHint: data.imageHint || '',
+      content,
+    };
   } catch (error) {
-    console.error('Failed to read or parse articles.json:', error);
+    console.error('Failed to read article:', error);
     return undefined;
   }
 }
@@ -54,6 +66,8 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   if (!article) {
     notFound();
   }
+
+  const html = marked.parse(article.content);
 
   return (
     <main className="container mx-auto max-w-4xl p-4 md:p-8">
@@ -90,7 +104,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         <CardContent className="pt-4">
           <div
             className="prose prose-lg max-w-none text-muted-foreground prose-h3:font-headline prose-h3:text-foreground prose-strong:text-foreground"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: html }}
           />
            <div className="mt-8 pt-6 border-t">
              <Button asChild variant="outline">
