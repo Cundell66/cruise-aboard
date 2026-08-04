@@ -12,6 +12,7 @@ import type { EnquiryFormValues } from "@/components/enquiry-form";
 import { OfferCard, type CruiseOffer } from "@/components/offer-card";
 import { FaqSection, type FaqItem } from "@/components/faq-section";
 import { InclusionsSection } from "./inclusions-section";
+import { TestimonialsSection } from "./testimonials-section";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -116,14 +117,21 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
       <main className="w-full max-w-7xl mx-auto p-4 md:p-8 flex-grow">
         <header className="text-center mb-8">
           <div className="flex justify-center items-center gap-4 mb-2">
-            <Anchor className="w-8 h-8 md:w-10 md:h-10 text-primary" />
-            <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary/90">
-              Cruise Aboard
-            </h1>
-            <Ship className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+            <Image
+              src="/cruise-aboard-logo.png"
+              alt="Cruise Aboard Logo"
+              width={72}
+              height={72}
+              className="rounded-md"
+            />
           </div>
-          <p className="font-body text-lg text-muted-foreground">
-            Get a personalized quote for your dream cruise.
+          <p className="font-headline text-2xl md:text-3xl font-semibold text-primary/90 mb-2">
+            MSC cruises from Southampton, sorted properly.
+          </p>
+          <p className="font-body text-lg text-muted-foreground max-w-2xl mx-auto">
+            I'm Charlie — one person, no call centres. Browse the cruises below,
+            then ask me for a quote. I'll find you the right ship, the right
+            cabin and the right price.
           </p>
         </header>
 
@@ -238,6 +246,7 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
         </div>
 
         <InclusionsSection />
+        <TestimonialsSection />
         <FaqSection items={faqItems} />
 
       </main>

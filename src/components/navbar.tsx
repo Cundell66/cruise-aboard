@@ -86,6 +86,15 @@ export function Navbar() {
       >
         About Us
       </Link>
+      <Link
+        href="/contact"
+        className={cn(
+            "text-sm font-medium transition-colors hover:text-primary-foreground/80",
+            pathname === "/contact" ? "text-white" : "text-primary-foreground/60"
+        )}
+      >
+        Contact
+      </Link>
        <Link
         href="/terms"
         className={cn(
@@ -131,6 +140,7 @@ export function Navbar() {
         </Accordion>
         <Link href="/articles" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname.startsWith("/articles") ? "text-white" : "text-primary-foreground/60")}>Articles</Link>
         <Link href="/about" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/about" ? "text-white" : "text-primary-foreground/60")}>About Us</Link>
+        <Link href="/contact" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/contact" ? "text-white" : "text-primary-foreground/60")}>Contact</Link>
         <Link href="/terms" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/terms" ? "text-white" : "text-primary-foreground/60")}>Terms & Conditions</Link>
         <Link href="/privacy" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/privacy" ? "text-white" : "text-primary-foreground/60")}>Privacy Policy</Link>
         <Link href="/cookies" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/cookies" ? "text-white" : "text-primary-foreground/60")}>Cookie Policy</Link>
