@@ -84,6 +84,7 @@ collections:
               - { label: "Drinks", name: "drinks", widget: "select", options: ["included", "available"] }
               - { label: "Offer Price", name: "offerPrice", widget: "number", hint: "Our price in GBP per person" }
               - { label: "Comments", name: "comments", widget: "text" }
+              - { label: "Blurb (hero card tagline)", name: "blurb", widget: "text", required: false, hint: "Shown on the big featured card, e.g. A perfect taster: dip your toe in the water without a fortnight's commitment." }
 
   - name: "site-settings"
     label: "Site Settings"
