@@ -11,16 +11,16 @@ import { OfferCard, type CruiseOffer } from "@/components/offer-card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "./ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
-import { getFilterOptions, cruiseMatchesDestination } from "@/lib/cruise-filters";
+import { getFilterOptions } from "@/lib/cruise-filters";
 
 interface CruisesClientProps {
   allCruises: CruiseOffer[];
   initialMonth?: string;
-  initialDestination?: string;
+  initialShip?: string;
   initialDuration?: string;
 }
 
-export function CruisesClient({ allCruises, initialMonth, initialDestination, initialDuration }: CruisesClientProps) {
+export function CruisesClient({ allCruises, initialMonth, initialShip, initialDuration }: CruisesClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -30,8 +30,7 @@ export function CruisesClient({ allCruises, initialMonth, initialDestination, in
   const [selectedOffer, setSelectedOffer] = useState<Partial<EnquiryFormValues> | undefined>(undefined);
 
   const [monthFilter, setMonthFilter] = useState(initialMonth && initialMonth !== 'all' ? initialMonth : 'all');
-  const [shipFilter, setShipFilter] = useState('all');
-  const [destinationFilter, setDestinationFilter] = useState(initialDestination && initialDestination !== 'all' ? initialDestination : 'all');
+  const [shipFilter, setShipFilter] = useState(initialShip && initialShip !== 'all' ? initialShip : 'all');
   const [durationFilter, setDurationFilter] = useState(initialDuration && initialDuration !== 'all' ? initialDuration : 'all');
 
   const formRef = useRef<HTMLDivElement>(null);
@@ -63,11 +62,7 @@ export function CruisesClient({ allCruises, initialMonth, initialDestination, in
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const availableMonths = useMemo(() => getFilterOptions(allCruises).months, [allCruises]);
-
-  const availableShips = useMemo(() => getFilterOptions(allCruises).ships, [allCruises]);
-
-  const availableDestinations = useMemo(() => getFilterOptions(allCruises).destinations, [allCruises]);
+  const filterOptions = useMemo(() => getFilterOptions(allCruises), [allCruises]);
 
   const filteredCruises = useMemo(() => {
     return allCruises.filter(cruise => {
@@ -76,41 +71,39 @@ export function CruisesClient({ allCruises, initialMonth, initialDestination, in
 
         const monthMatch = monthFilter === 'all' || cruiseMonthYear === monthFilter;
         const shipMatch = shipFilter === 'all' || cruise.ship === shipFilter;
-        const destMatch = cruiseMatchesDestination(cruise, destinationFilter);
         const durationMatch = durationFilter === 'all'
           || (durationFilter === '3-5' && cruise.nights && cruise.nights >= 3 && cruise.nights <= 5)
           || (durationFilter === '6-9' && cruise.nights && cruise.nights >= 6 && cruise.nights <= 9)
           || (durationFilter === '10+' && cruise.nights && cruise.nights >= 10);
 
-        return monthMatch && shipMatch && destMatch && durationMatch;
+        return monthMatch && shipMatch && durationMatch;
     });
-  }, [allCruises, monthFilter, shipFilter, destinationFilter, durationFilter]);
+  }, [allCruises, monthFilter, shipFilter, durationFilter]);
 
-  const syncFiltersToUrl = (month: string, destination: string, duration: string) => {
+  const syncFiltersToUrl = (month: string, ship: string, duration: string) => {
     const params = new URLSearchParams(searchParams.toString());
     const set = (key: string, value: string) => {
       if (value && value !== 'all') params.set(key, value);
       else params.delete(key);
     };
     set('month', month);
-    set('destination', destination);
+    set('ship', ship);
     set('duration', duration);
     router.replace(`/cruises?${params.toString()}`, { scroll: false });
   };
 
-  const handleMonthChange = (v: string) => { setMonthFilter(v); syncFiltersToUrl(v, destinationFilter, durationFilter); };
-  const handleDestinationChange = (v: string) => { setDestinationFilter(v); syncFiltersToUrl(monthFilter, v, durationFilter); };
-  const handleDurationChange = (v: string) => { setDurationFilter(v); syncFiltersToUrl(monthFilter, destinationFilter, v); };
+  const handleMonthChange = (v: string) => { setMonthFilter(v); syncFiltersToUrl(v, shipFilter, durationFilter); };
+  const handleShipChange = (v: string) => { setShipFilter(v); syncFiltersToUrl(monthFilter, v, durationFilter); };
+  const handleDurationChange = (v: string) => { setDurationFilter(v); syncFiltersToUrl(monthFilter, shipFilter, v); };
 
   const handleClearFilters = () => {
     setMonthFilter('all');
     setShipFilter('all');
-    setDestinationFilter('all');
     setDurationFilter('all');
     router.replace('/cruises', { scroll: false });
   };
 
-  const hasActiveFilters = monthFilter !== 'all' || shipFilter !== 'all' || destinationFilter !== 'all' || durationFilter !== 'all';
+  const hasActiveFilters = monthFilter !== 'all' || shipFilter !== 'all' || durationFilter !== 'all';
 
   return (
     <main className="w-full max-w-7xl mx-auto p-4 md:p-8 flex-grow">
@@ -128,31 +121,22 @@ export function CruisesClient({ allCruises, initialMonth, initialDestination, in
           <Filter className="w-5 h-5" />
           <span>Filter:</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full flex-grow">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full flex-grow">
           <Select value={monthFilter} onValueChange={handleMonthChange}>
             <SelectTrigger className="w-full"><SelectValue placeholder="Month..." /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Months</SelectItem>
-              {availableMonths.map(month => (
+              {filterOptions.months.map(month => (
                 <SelectItem key={month} value={month}>{month}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Select value={shipFilter} onValueChange={setShipFilter}>
+          <Select value={shipFilter} onValueChange={handleShipChange}>
             <SelectTrigger className="w-full"><SelectValue placeholder="Ship..." /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Ships</SelectItem>
-              {availableShips.map(ship => (
+              {filterOptions.ships.map(ship => (
                 <SelectItem key={ship} value={ship}>{ship}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={destinationFilter} onValueChange={handleDestinationChange}>
-            <SelectTrigger className="w-full"><SelectValue placeholder="Destination..." /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Anywhere</SelectItem>
-              {availableDestinations.map((d) => (
-                <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
               ))}
             </SelectContent>
           </Select>

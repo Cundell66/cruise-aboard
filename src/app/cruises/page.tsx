@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 interface SearchParams {
   month?: string;
-  destination?: string;
+  ship?: string;
   duration?: string;
 }
 
@@ -27,7 +27,7 @@ export default async function CruisesPage({
     <CruisesClient
       allCruises={allCruises}
       initialMonth={params.month}
-      initialDestination={params.destination}
+      initialShip={params.ship}
       initialDuration={params.duration}
     />
   );

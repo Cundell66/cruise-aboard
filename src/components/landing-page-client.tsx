@@ -64,7 +64,7 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
   const [error, setError] = useState<string | null>(null);
   const [selectedOffer, setSelectedOffer] = useState<Partial<EnquiryFormValues> | undefined>(undefined);
 
-  const [destinationFilter, setDestinationFilter] = useState('all');
+  const [shipFilter, setShipFilter] = useState('all');
   const [monthFilter, setMonthFilter] = useState('all');
   const [durationFilter, setDurationFilter] = useState('all');
 
@@ -99,7 +99,7 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
 
   const handleSearch = () => {
     const params = new URLSearchParams();
-    if (destinationFilter !== 'all') params.set('destination', destinationFilter);
+    if (shipFilter !== 'all') params.set('ship', shipFilter);
     if (monthFilter !== 'all') params.set('month', monthFilter);
     if (durationFilter !== 'all') params.set('duration', durationFilter);
     const qs = params.toString();
@@ -148,19 +148,7 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
         <section className="-mt-10 relative z-10 mb-12">
           <Card className="border shadow-xl bg-card">
             <CardContent className="p-5 md:p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-                <div>
-                  <label className="text-xs font-semibold uppercase tracking-wide text-primary mb-1 block">Destination</label>
-                  <Select value={destinationFilter} onValueChange={setDestinationFilter}>
-                    <SelectTrigger className="w-full"><SelectValue placeholder="Where to?" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Anywhere</SelectItem>
-                      {filterOptions.destinations.map((d) => (
-                        <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <div>
                   <label className="text-xs font-semibold uppercase tracking-wide text-primary mb-1 block">Date</label>
                   <Select value={monthFilter} onValueChange={setMonthFilter}>
@@ -174,6 +162,18 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
                   </Select>
                 </div>
                 <div>
+                  <label className="text-xs font-semibold uppercase tracking-wide text-primary mb-1 block">Ship</label>
+                  <Select value={shipFilter} onValueChange={setShipFilter}>
+                    <SelectTrigger className="w-full"><SelectValue placeholder="Which ship?" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Any ship</SelectItem>
+                      {filterOptions.ships.map((ship) => (
+                        <SelectItem key={ship} value={ship}>{ship}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
                   <label className="text-xs font-semibold uppercase tracking-wide text-primary mb-1 block">Duration</label>
                   <Select value={durationFilter} onValueChange={setDurationFilter}>
                     <SelectTrigger className="w-full"><SelectValue placeholder="How long?" /></SelectTrigger>
@@ -182,19 +182,6 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
                       <SelectItem value="3-5">3-5 nights</SelectItem>
                       <SelectItem value="6-9">6-9 nights</SelectItem>
                       <SelectItem value="10+">10+ nights</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-xs font-semibold uppercase tracking-wide text-primary mb-1 block">Stateroom</label>
-                  <Select>
-                    <SelectTrigger className="w-full"><SelectValue placeholder="Any cabin" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="any">Any cabin</SelectItem>
-                      <SelectItem value="inside">Inside</SelectItem>
-                      <SelectItem value="ocean">Ocean View</SelectItem>
-                      <SelectItem value="balcony">Balcony</SelectItem>
-                      <SelectItem value="suite">Suite</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

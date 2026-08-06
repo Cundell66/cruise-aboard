@@ -1,46 +1,27 @@
 import type { CruiseOffer } from "@/components/offer-card";
 
-// Friendly labels for API region values (anything unknown passes through as-is)
-const REGION_LABELS: Record<string, string> = {
-  'northern europe': 'Northern Europe',
-  'world-wide': 'World Cruises',
-  'mediterranean': 'Mediterranean',
-  'norway': 'Norwegian Fjords',
-  'norwegian fjords': 'Norwegian Fjords',
-  'canaries': 'Canaries',
-  'canary islands': 'Canaries',
-};
+// The full Cruise Aboard fleet. Always shown in the ship filter so customers
+// can pick "their" ship even when it has no current sailings from Southampton.
+const KNOWN_SHIPS = ['MSC Virtuosa', 'MSC Poesia', 'MSC Preziosa', 'MSC Meraviglia'];
 
 export interface FilterOptions {
   months: string[];
   ships: string[];
-  destinations: { value: string; label: string }[];
 }
 
 export function getFilterOptions(allCruises: CruiseOffer[]): FilterOptions {
   const months = new Set<string>();
-  const ships = new Set<string>();
-  const regions = new Set<string>();
+  const ships = new Set<string>(KNOWN_SHIPS);
 
   allCruises.forEach((cruise) => {
     const date = new Date(cruise.date);
     months.add(`${date.toLocaleString('en-GB', { month: 'long' })} ${date.getFullYear()}`);
     if (cruise.ship) ships.add(cruise.ship);
-    (cruise.regions || []).forEach((r) => regions.add(r.trim().toLowerCase()));
   });
 
   return {
     months: Array.from(months).sort((a, b) => new Date(a).getTime() - new Date(b).getTime()),
-    ships: Array.from(ships).sort(),
-    destinations: Array.from(regions)
-      .sort()
-      .map((r) => ({ value: r, label: REGION_LABELS[r] || r })),
+    // Known fleet first (keeps a stable order), then any extra ships the API returns
+    ships: [...KNOWN_SHIPS.filter((s) => ships.has(s)), ...Array.from(ships).filter((s) => !KNOWN_SHIPS.includes(s))],
   };
-}
-
-export function cruiseMatchesDestination(cruise: CruiseOffer, destinationFilter: string): boolean {
-  if (!destinationFilter || destinationFilter === 'all') return true;
-  const wanted = destinationFilter.trim().toLowerCase();
-  const regions = (cruise.regions || []).map((r) => r.trim().toLowerCase());
-  return regions.includes(wanted);
 }
