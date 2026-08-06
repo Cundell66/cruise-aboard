@@ -24,5 +24,8 @@ export const CONTACT_LINKS = {
   whatsappHref: SITE_CONFIG.whatsapp
     ? `https://wa.me/${SITE_CONFIG.whatsapp.replace(/\D/g, "")}`
     : null,
-  messengerHref: `https://m.me/${SITE_CONFIG.facebookPage}`,
+  // Full messenger.com/t/ URL rather than m.me short links: m.me is notorious
+  // for forcing the "Get Messenger" app-store page even when the app is
+  // installed. The full URL opens the app when present and falls back to web.
+  messengerHref: `https://www.messenger.com/t/${SITE_CONFIG.facebookPage}`,
 };
