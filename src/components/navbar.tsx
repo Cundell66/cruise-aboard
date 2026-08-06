@@ -169,7 +169,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-primary shadow-sm">
       <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/cruise-aboard-logo.png" alt="Cruise Aboard Logo" width={1280} height={726} className="h-10 w-auto rounded-md" />
+          <Image src="/cruise-aboard-logo.png" alt="Cruise Aboard Logo" width={1940} height={1100} className="h-10 w-auto rounded-md" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -189,7 +189,7 @@ export function Navbar() {
             <SheetContent side="left" className="bg-primary text-primary-foreground">
               <div className="grid gap-6 p-6">
                  <Link href="/" onClick={handleLinkClick} className="flex items-center gap-2">
-                      <Image src="/cruise-aboard-logo.png" alt="Cruise Aboard Logo" width={1280} height={726} className="h-8 w-auto" />
+                      <Image src="/cruise-aboard-logo.png" alt="Cruise Aboard Logo" width={1940} height={1100} className="h-8 w-auto" />
                   </Link>
                 <nav className="grid gap-4">
                   <MobileNavLinks />
