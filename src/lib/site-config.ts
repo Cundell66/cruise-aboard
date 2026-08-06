@@ -9,7 +9,7 @@ export const SITE_CONFIG = {
   whatsapp: "447356052353", // wa.me link (Connor, provided 2026-08-06)
   // Facebook page name for Messenger deep links
   facebookPage: "cruiseaboard", // used for m.me/ links (Connor, provided 2026-08-06)
-  facebookGroup: "", // URL to the MSC Cruises UK Forum group
+  facebookGroup: "https://facebook.com/groups/1254195928625211/", // MSC Cruises UK Forum (Connor, provided 2026-08-06)
   // Trust signals (from questionnaire, 2026-08-03; member count live 2026-08-05)
   groupMembers: "49,292",
   emailList: "1,930",
