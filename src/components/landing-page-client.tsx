@@ -11,6 +11,7 @@ import { submitEnquiry } from "@/app/actions";
 import { Facebook, Mail, CheckCircle } from "lucide-react";
 import type { EnquiryFormValues } from "@/components/enquiry-form";
 import { OfferCard, type CruiseOffer } from "@/components/offer-card";
+import { FeaturedCruiseCard } from "@/components/featured-cruise-card";
 import { FaqSection, type FaqItem } from "@/components/faq-section";
 import { InclusionsSection } from "./inclusions-section";
 import { TestimonialsSection } from "./testimonials-section";
@@ -256,21 +257,28 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
           </div>
         </section>
 
-        {/* ===== FEATURED CRUISES ===== */}
+        {/* ===== FEATURED CRUISE ===== */}
         {featuredCruises.length > 0 && (
-          <section id="featured-offers" className="mb-16">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">This month's featured cruises</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {featuredCruises.map(offer => (
-                  <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />
-                ))}
-              </div>
-              <div className="text-center mt-8">
-                <Button asChild variant="outline" size="lg" className="font-bold">
-                  <Link href="/cruises">See all cruises from Southampton</Link>
-                </Button>
-              </div>
-          </section>
+          <>
+            <FeaturedCruiseCard offer={featuredCruises[0]} onRequestQuote={handleRequestQuote} />
+
+            {featuredCruises.length > 1 && (
+              <section className="mt-16">
+                <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">More featured sailings</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {featuredCruises.slice(1).map(offer => (
+                    <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <div className="text-center mt-16 mb-16">
+              <Button asChild variant="outline" size="lg" className="font-bold">
+                <Link href="/cruises">See all cruises from Southampton</Link>
+              </Button>
+            </div>
+          </>
         )}
 
         {/* ===== ENQUIRY FORM ===== */}

@@ -7,6 +7,7 @@ interface FeaturedCruiseInfo {
   offerPrice: number;
   drinks?: 'included' | 'available';
   comments?: string;
+  blurb?: string;
 }
 
 interface ItineraryInfo {
@@ -39,7 +40,7 @@ export async function getCruiseData(): Promise<CruiseData> {
   const featuredCruisesFilePath = path.join(process.cwd(), 'content', 'featured-cruises.json');
   const featuredCruisesJsonData = fs.readFileSync(featuredCruisesFilePath, 'utf-8');
   const featuredCruisesData = JSON.parse(featuredCruisesJsonData);
-  const featuredCruiseMap = new Map<string, { offerPrice: number; drinks?: 'included' | 'available'; comments?: string }>(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks, comments: item.comments }]));
+  const featuredCruiseMap = new Map<string, { offerPrice: number; drinks?: 'included' | 'available'; comments?: string; blurb?: string }>(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks, comments: item.comments, blurb: item.blurb }]));
   const featuredVendorIds = new Set(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => item.vendor_id));
 
   // Read site settings (editable via Decap CMS)
@@ -118,13 +119,24 @@ export async function getCruiseData(): Promise<CruiseData> {
           departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
           nights: cruise.cruise_nights ? Number(cruise.cruise_nights) : 0,
           regions: Array.isArray(cruise.regions) ? cruise.regions.map((r: string) => r.trim()).filter(Boolean) : [],
+          insidePrice: cruise.inside_price ? Number(cruise.inside_price) : undefined,
+          balconyPrice: cruise.balcony_price ? Number(cruise.balcony_price) : undefined,
         };
       });
 
     allCruises.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    
+
+    // Featured cruises keep the order they're listed in featured-cruises.json
+    // (Connor's curated order, not date order) so the hero card always shows
+    // the intended lead sailing.
+    const featuredOrder = new Map<string, number>();
+    featuredCruisesData.featured.forEach((item: FeaturedCruiseInfo, index: number) => {
+      featuredOrder.set(item.vendor_id, index);
+    });
+
     const featuredCruises = allCruises
       .filter(cruise => featuredVendorIds.has(String(cruise.id)))
+      .sort((a, b) => (featuredOrder.get(String(a.id)) ?? 99) - (featuredOrder.get(String(b.id)) ?? 99))
       .map(cruise => {
           const featuredInfo = featuredCruiseMap.get(String(cruise.id));
           if (!featuredInfo) return cruise;
@@ -145,6 +157,8 @@ export async function getCruiseData(): Promise<CruiseData> {
           if (voyagerIndex !== -1 && featuredInfo.comments) {
               featuredCruise.details[voyagerIndex] = featuredInfo.comments;
           }
+
+          featuredCruise.blurb = featuredInfo.blurb;
 
           return featuredCruise;
       });

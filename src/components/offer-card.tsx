@@ -21,6 +21,9 @@ export interface CruiseOffer {
   drinksIncluded?: boolean;
   nights?: number;
   regions?: string[];
+  insidePrice?: number;
+  balconyPrice?: number;
+  blurb?: string;
 }
 
 interface OfferCardProps {
