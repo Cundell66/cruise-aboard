@@ -13,6 +13,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { SITE_CONFIG } from "@/lib/site-config";
+import { MessageCircle, MessageSquare } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -74,6 +76,30 @@ export function EnquiryForm({ onSubmit, isLoading, serverError, initialData }: E
 
   const sailedWithMsc = form.watch("sailedWithMsc");
   const hasVoyagersNumber = form.watch("hasVoyagersNumber");
+
+  const buildQuoteMessage = () => {
+    const v = form.getValues();
+    const lines = [
+      "Hi Charlie, I'd like a quote please.",
+      v.name ? `Name: ${v.name}` : null,
+      v.email ? `Email: ${v.email}` : null,
+      v.ship ? `Ship: ${v.ship}` : null,
+      v.destination ? `Destination: ${v.destination}` : null,
+      v.departureDates ? `Departure dates: ${v.departureDates}` : null,
+      `Adults: ${v.adults || "?"}`,
+      `Children: ${v.children || "0"}`,
+      v.cabinType ? `Cabin type: ${v.cabinType}` : null,
+      v.experience ? `Experience: ${v.experience}` : null,
+      v.drinksPackage ? `Drinks package: ${v.drinksPackage === "yes" ? "Yes" : "No"}` : null,
+      v.sailedWithMsc ? `Sailed with MSC before: ${v.sailedWithMsc === "yes" ? "Yes" : "No"}` : null,
+      v.voyagersNumber ? `Voyagers Club number: ${v.voyagersNumber}` : null,
+      v.voyagersInfo ? `Voyagers Club details: ${v.voyagersInfo}` : null,
+    ];
+    return lines.filter(Boolean).join("\n");
+  };
+
+  const whatsappHref = `https://wa.me/${SITE_CONFIG.whatsapp}?text=${encodeURIComponent(buildQuoteMessage())}`;
+  const messengerHref = `https://m.me/${SITE_CONFIG.facebookPage}?text=${encodeURIComponent(buildQuoteMessage())}`;
 
   return (
     <Card className="w-full border-primary/20 shadow-lg">
@@ -373,6 +399,39 @@ export function EnquiryForm({ onSubmit, isLoading, serverError, initialData }: E
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isLoading ? "Submitting..." : "Get My Quote"}
             </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">or send it straight to Charlie</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-[#25D366] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1fb457]"
+              >
+                <MessageCircle className="h-5 w-5" />
+                Send via WhatsApp
+              </a>
+              <a
+                href={messengerHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-[#0084FF] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[#0073e6]"
+              >
+                <MessageSquare className="h-5 w-5" />
+                Send via Messenger
+              </a>
+            </div>
+            <p className="text-center text-xs text-muted-foreground">
+              Your details will be pre-filled. Just press send in the app.
+            </p>
           </form>
         </Form>
       </CardContent>

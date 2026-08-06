@@ -25,7 +25,7 @@ import { useState } from "react";
 
 const shipLinks = [
   { href: "/ships/msc-virtuosa", label: "MSC Virtuosa" },
-  { href: "/ships/msc-poesia", label: "MSC Poesia" },
+  { href: "/ships/msc-meraviglia", label: "MSC Meraviglia" },
   { href: "/ships/msc-preziosa", label: "MSC Preziosa" },
 ];
 

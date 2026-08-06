@@ -6,9 +6,9 @@ export const SITE_CONFIG = {
   domain: "cruiseaboard.co.uk",
   email: "admin@cruiseaboard.co.uk",
   // TODO(Connor): add your WhatsApp number in international format, e.g. "+447700900123"
-  whatsapp: "", // wa.me link will be hidden until set
-  // TODO(Connor): add your Facebook page name for Messenger deep links
-  facebookPage: "CharlieatCruiseAboard", // used for m.me/ links
+  whatsapp: "447356052353", // wa.me link (Connor, provided 2026-08-06)
+  // Facebook page name for Messenger deep links
+  facebookPage: "cruiseaboard", // used for m.me/ links (Connor, provided 2026-08-06)
   facebookGroup: "", // URL to the MSC Cruises UK Forum group
   // Trust signals (from questionnaire, 2026-08-03; member count live 2026-08-05)
   groupMembers: "49,292",

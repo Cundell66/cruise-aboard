@@ -2,7 +2,7 @@ import type { CruiseOffer } from "@/components/offer-card";
 
 // The full Cruise Aboard fleet. Always shown in the ship filter so customers
 // can pick "their" ship even when it has no current sailings from Southampton.
-const KNOWN_SHIPS = ['MSC Virtuosa', 'MSC Poesia', 'MSC Preziosa', 'MSC Meraviglia'];
+const KNOWN_SHIPS = ['MSC Virtuosa', 'MSC Meraviglia', 'MSC Preziosa'];
 
 export interface FilterOptions {
   months: string[];

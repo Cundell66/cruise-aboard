@@ -41,8 +41,8 @@ const videos = [
       src: 'https://iframe.mediadelivery.net/embed/58732/3c61795a-5d9d-42f0-8e69-bb760aa53c0b?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
     },
     {
-      ship: 'MSC Poesia',
-      src: 'https://iframe.mediadelivery.net/embed/58732/7dc1b7ca-62e6-4949-b4c3-8d91f66f7bd0?autoplay=true&loop=true&muted=true&preload=true&responsive=true',
+      ship: 'MSC Meraviglia',
+      src: '', // TODO(Connor): Meraviglia video URL to follow
     },
     {
       ship: 'MSC Preziosa',
@@ -301,13 +301,19 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
                          <div className="absolute top-0 left-0 w-full z-10 p-4 bg-gradient-to-b from-black/60 to-transparent">
                            <h3 className="font-headline text-2xl font-bold text-white text-center">{video.ship}</h3>
                          </div>
-                         <iframe
-                           src={video.src}
-                           className="absolute top-0 left-0 w-full h-full border-0"
-                           allow="autoplay; fullscreen"
-                           allowFullScreen
-                           referrerPolicy="no-referrer"
-                         ></iframe>
+                         {video.src ? (
+                           <iframe
+                             src={video.src}
+                             className="absolute top-0 left-0 w-full h-full border-0"
+                             allow="autoplay; fullscreen"
+                             allowFullScreen
+                             referrerPolicy="no-referrer"
+                           ></iframe>
+                         ) : (
+                           <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
+                             <p className="font-headline text-lg font-semibold text-muted-foreground">Video coming soon</p>
+                           </div>
+                         )}
                        </CardContent>
                     </Card>
                   </div>
