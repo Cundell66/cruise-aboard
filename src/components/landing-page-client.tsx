@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "./ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SITE_CONFIG, CONTACT_LINKS } from "@/lib/site-config";
+import type { FilterOptions } from "@/lib/cruise-filters";
 import {
   Carousel,
   CarouselContent,
@@ -53,9 +54,10 @@ interface LandingPageClientProps {
     featuredCruises: CruiseOffer[];
     faqItems: FaqItem[];
     articles: ArticlePreview[];
+    filterOptions: FilterOptions;
 }
 
-export function LandingPageClient({ featuredCruises, faqItems, articles }: LandingPageClientProps) {
+export function LandingPageClient({ featuredCruises, faqItems, articles, filterOptions }: LandingPageClientProps) {
   const router = useRouter();
   const [submissionState, setSubmissionState] = useState<SuggestAlternativeCruisesOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -153,11 +155,9 @@ export function LandingPageClient({ featuredCruises, faqItems, articles }: Landi
                     <SelectTrigger className="w-full"><SelectValue placeholder="Where to?" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Anywhere</SelectItem>
-                      <SelectItem value="mediterranean">Mediterranean</SelectItem>
-                      <SelectItem value="norway">Norwegian Fjords</SelectItem>
-                      <SelectItem value="northern europe">Northern Europe</SelectItem>
-                      <SelectItem value="canary">Canaries</SelectItem>
-                      <SelectItem value="world">World Cruises</SelectItem>
+                      {filterOptions.destinations.map((d) => (
+                        <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -167,12 +167,9 @@ export function LandingPageClient({ featuredCruises, faqItems, articles }: Landi
                     <SelectTrigger className="w-full"><SelectValue placeholder="When?" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Any time</SelectItem>
-                      <SelectItem value="august 2026">August 2026</SelectItem>
-                      <SelectItem value="september 2026">September 2026</SelectItem>
-                      <SelectItem value="october 2026">October 2026</SelectItem>
-                      <SelectItem value="november 2026">November 2026</SelectItem>
-                      <SelectItem value="december 2026">December 2026</SelectItem>
-                      <SelectItem value="january 2027">January 2027</SelectItem>
+                      {filterOptions.months.map((month) => (
+                        <SelectItem key={month} value={month}>{month}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>

@@ -117,6 +117,7 @@ export async function getCruiseData(): Promise<CruiseData> {
           destination: cruise.name || 'Various',
           departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
           nights: cruise.cruise_nights ? Number(cruise.cruise_nights) : 0,
+          regions: Array.isArray(cruise.regions) ? cruise.regions.map((r: string) => r.trim()).filter(Boolean) : [],
         };
       });
 

@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { getCruiseData } from '@/lib/cruises';
+import { getFilterOptions, type FilterOptions } from '@/lib/cruise-filters';
 import { LandingPageClient, type ArticlePreview } from '@/components/landing-page-client';
 import { FaqItem } from '@/components/faq-section';
 
@@ -31,7 +32,8 @@ async function getArticles(): Promise<ArticlePreview[]> {
 }
 
 export default async function LandingPage() {
-  const { featuredCruises } = await getCruiseData();
+  const { featuredCruises, allCruises } = await getCruiseData();
+  const filterOptions: FilterOptions = getFilterOptions(allCruises);
 
   const faqFilePath = path.join(process.cwd(), 'content', 'faqs.json');
   const faqJsonData = fs.readFileSync(faqFilePath, 'utf-8');
@@ -39,5 +41,5 @@ export default async function LandingPage() {
 
   const articles = await getArticles();
 
-  return <LandingPageClient featuredCruises={featuredCruises} faqItems={faqItems} articles={articles} />;
+  return <LandingPageClient featuredCruises={featuredCruises} faqItems={faqItems} articles={articles} filterOptions={filterOptions} />;
 }

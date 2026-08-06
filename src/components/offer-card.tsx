@@ -20,6 +20,7 @@ export interface CruiseOffer {
   departureDates: string;
   drinksIncluded?: boolean;
   nights?: number;
+  regions?: string[];
 }
 
 interface OfferCardProps {

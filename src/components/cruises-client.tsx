@@ -11,6 +11,7 @@ import { OfferCard, type CruiseOffer } from "@/components/offer-card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "./ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
+import { getFilterOptions, cruiseMatchesDestination } from "@/lib/cruise-filters";
 
 interface CruisesClientProps {
   allCruises: CruiseOffer[];
@@ -62,23 +63,11 @@ export function CruisesClient({ allCruises, initialMonth, initialDestination, in
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const availableMonths = useMemo(() => {
-    const months = new Set<string>();
-    allCruises.forEach(cruise => {
-        const date = new Date(cruise.date);
-        const monthYear = `${date.toLocaleString('en-GB', { month: 'long' })} ${date.getFullYear()}`;
-        months.add(monthYear);
-    });
-    return Array.from(months);
-  }, [allCruises]);
+  const availableMonths = useMemo(() => getFilterOptions(allCruises).months, [allCruises]);
 
-  const availableShips = useMemo(() => {
-    const ships = new Set<string>();
-    allCruises.forEach(cruise => {
-      if (cruise.ship) ships.add(cruise.ship);
-    });
-    return Array.from(ships).sort();
-  }, [allCruises]);
+  const availableShips = useMemo(() => getFilterOptions(allCruises).ships, [allCruises]);
+
+  const availableDestinations = useMemo(() => getFilterOptions(allCruises).destinations, [allCruises]);
 
   const filteredCruises = useMemo(() => {
     return allCruises.filter(cruise => {
@@ -87,7 +76,7 @@ export function CruisesClient({ allCruises, initialMonth, initialDestination, in
 
         const monthMatch = monthFilter === 'all' || cruiseMonthYear === monthFilter;
         const shipMatch = shipFilter === 'all' || cruise.ship === shipFilter;
-        const destMatch = destinationFilter === 'all' || (cruise.destination || '').toLowerCase().includes(destinationFilter);
+        const destMatch = cruiseMatchesDestination(cruise, destinationFilter);
         const durationMatch = durationFilter === 'all'
           || (durationFilter === '3-5' && cruise.nights && cruise.nights >= 3 && cruise.nights <= 5)
           || (durationFilter === '6-9' && cruise.nights && cruise.nights >= 6 && cruise.nights <= 9)
@@ -162,11 +151,9 @@ export function CruisesClient({ allCruises, initialMonth, initialDestination, in
             <SelectTrigger className="w-full"><SelectValue placeholder="Destination..." /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Anywhere</SelectItem>
-              <SelectItem value="mediterranean">Mediterranean</SelectItem>
-              <SelectItem value="norway">Norwegian Fjords</SelectItem>
-              <SelectItem value="northern europe">Northern Europe</SelectItem>
-              <SelectItem value="canary">Canaries</SelectItem>
-              <SelectItem value="world">World Cruises</SelectItem>
+              {availableDestinations.map((d) => (
+                <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select value={durationFilter} onValueChange={handleDurationChange}>
