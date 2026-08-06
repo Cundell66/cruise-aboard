@@ -229,8 +229,8 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
                   <p className="text-xs text-muted-foreground mt-1">personal service</p>
                 </div>
                 <div className="bg-card border rounded-lg p-4 text-center shadow-sm">
-                  <p className="font-headline text-2xl font-bold text-primary">ATOL</p>
-                  <p className="text-xs text-muted-foreground mt-1">protected booking</p>
+                  <p className="font-headline text-2xl font-bold text-primary">ABTA &amp; ATOL</p>
+                  <p className="text-xs text-muted-foreground mt-1">fully protected booking</p>
                 </div>
               </div>
             </div>
@@ -242,7 +242,7 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
                   "Voyager Club discounts applied",
                   "Parking sorted for you",
                   "Honest advice on what's worth it",
-                  "ATOL-protected booking",
+                  "Fully ABTA & ATOL protected booking",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-accent mt-0.5 shrink-0" />
@@ -337,7 +337,7 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
         <section id="community" className="mb-16 text-center bg-secondary/40 border rounded-xl p-10">
           <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary/90 mb-4">Join the community</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-            Join <strong className="text-primary">{SITE_CONFIG.groupMembers} cruisers</strong> who've already found their man in the group.
+            Join <strong className="text-primary">{SITE_CONFIG.groupMembers} cruisers</strong> in the UK's friendliest MSC cruise group.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button asChild size="lg" className="bg-primary text-white font-bold hover:bg-primary/90">

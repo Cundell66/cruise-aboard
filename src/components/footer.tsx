@@ -1,6 +1,13 @@
+import Link from "next/link";
+
 export function Footer() {
   return (
     <footer className="w-full text-center p-4 mt-8 border-t-4 text-sm text-muted-foreground">
+      <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-4 font-medium">
+        <Link href="/terms" className="hover:text-primary transition-colors">Terms &amp; Conditions</Link>
+        <Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+        <Link href="/cookies" className="hover:text-primary transition-colors">Cookie Policy</Link>
+      </nav>
       <p>&copy; {new Date().getFullYear()} Cruise Aboard. All Rights Reserved.</p>
       <p> All cruises shown are subject to availability. Prices are per person based on double occupancy, they are subject to change and may vary without notice. </p>
       <p> These offers are valid on new bookings only, on selected sailings and subject to availability by MSC Cruises.</p>
