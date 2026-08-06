@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { SuggestAlternativeCruisesOutput } from "@/ai/flows/suggest-alternative-cruises";
 import { EnquiryForm } from "@/components/enquiry-form";
 import { CruiseSuggestions } from "@/components/cruise-suggestions";
 import { submitEnquiry } from "@/app/actions";
-import { Anchor, Ship, Filter, XCircle, Users, Facebook, Mail, CheckCircle, Star } from "lucide-react";
+import { Facebook, Mail, CheckCircle } from "lucide-react";
 import type { EnquiryFormValues } from "@/components/enquiry-form";
 import { OfferCard, type CruiseOffer } from "@/components/offer-card";
 import { FaqSection, type FaqItem } from "@/components/faq-section";
@@ -50,20 +51,19 @@ const videos = [
 
 interface LandingPageClientProps {
     featuredCruises: CruiseOffer[];
-    allCruises: CruiseOffer[];
     faqItems: FaqItem[];
     articles: ArticlePreview[];
 }
 
-export function LandingPageClient({ featuredCruises, allCruises, faqItems, articles }: LandingPageClientProps) {
+export function LandingPageClient({ featuredCruises, faqItems, articles }: LandingPageClientProps) {
+  const router = useRouter();
   const [submissionState, setSubmissionState] = useState<SuggestAlternativeCruisesOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedOffer, setSelectedOffer] = useState<Partial<EnquiryFormValues> | undefined>(undefined);
-  
-  const [monthFilter, setMonthFilter] = useState('all');
-  const [shipFilter, setShipFilter] = useState('all');
+
   const [destinationFilter, setDestinationFilter] = useState('all');
+  const [monthFilter, setMonthFilter] = useState('all');
   const [durationFilter, setDurationFilter] = useState('all');
 
   const formRef = useRef<HTMLDivElement>(null);
@@ -95,50 +95,13 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems, artic
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const availableMonths = useMemo(() => {
-    const months = new Set<string>();
-    allCruises.forEach(cruise => {
-        const date = new Date(cruise.date);
-        const monthYear = `${date.toLocaleString('en-GB', { month: 'long' })} ${date.getFullYear()}`;
-        months.add(monthYear);
-    });
-    return Array.from(months);
-  }, [allCruises]);
-
-  const availableShips = ['MSC Virtuosa', 'MSC Poesia', 'MSC Preziosa'];
-
-  const filteredCruises = useMemo(() => {
-    return allCruises.filter(cruise => {
-        const date = new Date(cruise.date);
-        const cruiseMonthYear = `${date.toLocaleString('en-GB', { month: 'long' })} ${date.getFullYear()}`;
-        
-        const monthMatch = monthFilter === 'all' || cruiseMonthYear === monthFilter;
-        const shipMatch = shipFilter === 'all' || cruise.ship === shipFilter;
-        const destMatch = destinationFilter === 'all' || (cruise.destination || '').toLowerCase().includes(destinationFilter);
-        const durationMatch = durationFilter === 'all'
-          || (durationFilter === '3-5' && cruise.nights && cruise.nights >= 3 && cruise.nights <= 5)
-          || (durationFilter === '6-9' && cruise.nights && cruise.nights >= 6 && cruise.nights <= 9)
-          || (durationFilter === '10+' && cruise.nights && cruise.nights >= 10);
-
-        return monthMatch && shipMatch && destMatch && durationMatch;
-    });
-  }, [allCruises, monthFilter, shipFilter, destinationFilter, durationFilter]);
-    
-  const handleClearFilters = () => {
-    setMonthFilter('all');
-    setShipFilter('all');
-    setDestinationFilter('all');
-    setDurationFilter('all');
-  };
-
-  const hasActiveFilters = monthFilter !== 'all' || shipFilter !== 'all' || destinationFilter !== 'all' || durationFilter !== 'all';
-
-  const scrollToOffers = () => {
-    document.getElementById('all-offers')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const handleSearch = () => {
-    scrollToOffers();
+    const params = new URLSearchParams();
+    if (destinationFilter !== 'all') params.set('destination', destinationFilter);
+    if (monthFilter !== 'all') params.set('month', monthFilter);
+    if (durationFilter !== 'all') params.set('duration', durationFilter);
+    const qs = params.toString();
+    router.push(qs ? `/cruises?${qs}` : '/cruises');
   };
 
   return (
@@ -204,9 +167,12 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems, artic
                     <SelectTrigger className="w-full"><SelectValue placeholder="When?" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Any time</SelectItem>
-                      {availableMonths.map(month => (
-                        <SelectItem key={month} value={month}>{month}</SelectItem>
-                      ))}
+                      <SelectItem value="august 2026">August 2026</SelectItem>
+                      <SelectItem value="september 2026">September 2026</SelectItem>
+                      <SelectItem value="october 2026">October 2026</SelectItem>
+                      <SelectItem value="november 2026">November 2026</SelectItem>
+                      <SelectItem value="december 2026">December 2026</SelectItem>
+                      <SelectItem value="january 2027">January 2027</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -315,64 +281,13 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems, artic
                   <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />
                 ))}
               </div>
+              <div className="text-center mt-8">
+                <Button asChild variant="outline" size="lg" className="font-bold">
+                  <Link href="/cruises">See all cruises from Southampton</Link>
+                </Button>
+              </div>
           </section>
         )}
-
-        {/* ===== ALL OFFERS ===== */}
-        <section id="all-offers" className="mb-12 scroll-mt-24">
-            <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">All MSC Cruises from Southampton</h2>
-            
-            <div className="bg-card p-4 rounded-lg border shadow-sm mb-8 flex flex-col md:flex-row items-center gap-4">
-                <div className="flex items-center gap-2 font-semibold text-primary/90">
-                    <Filter className="w-5 h-5"/>
-                    <span>Filter Cruises:</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:flex-row gap-4 w-full md:w-auto flex-grow">
-                    <Select value={monthFilter} onValueChange={setMonthFilter}>
-                        <SelectTrigger className="w-full sm:w-[200px]">
-                            <SelectValue placeholder="Filter by month..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All Months</SelectItem>
-                            {availableMonths.map(month => (
-                                <SelectItem key={month} value={month}>{month}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Select value={shipFilter} onValueChange={setShipFilter}>
-                        <SelectTrigger className="w-full sm:w-[200px]">
-                            <SelectValue placeholder="Filter by ship..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All Ships</SelectItem>
-                            {availableShips.map(ship => (
-                                <SelectItem key={ship} value={ship}>{ship}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-                {hasActiveFilters && (
-                    <Button variant="ghost" onClick={handleClearFilters} className="text-muted-foreground hover:text-foreground">
-                        <XCircle className="w-4 h-4 mr-2" />
-                        Clear Filters
-                    </Button>
-                )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredCruises.length > 0 ? (
-                filteredCruises.map(offer => (
-                  <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />
-                ))
-              ) : (
-                <div className="md:col-span-2 lg:col-span-3 text-center py-10">
-                    <p className="text-lg text-muted-foreground mb-4">No cruises match your selected filters.</p>
-                    <Button variant="outline" onClick={handleClearFilters}>Clear Filters</Button>
-                </div>
-              )}
-            </div>
-        </section>
 
         {/* ===== ENQUIRY FORM ===== */}
         <div ref={formRef} id="quote" className="w-full max-w-2xl mx-auto scroll-mt-20 mb-16">

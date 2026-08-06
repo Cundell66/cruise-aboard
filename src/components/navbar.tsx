@@ -49,6 +49,16 @@ export function Navbar() {
         Home
       </Link>
       
+      <Link
+        href="/cruises"
+        className={cn(
+            "text-sm font-medium transition-colors hover:text-primary-foreground/80",
+            pathname.startsWith("/cruises") ? "text-white" : "text-primary-foreground/60"
+        )}
+      >
+        Cruises
+      </Link>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className={cn(
@@ -134,6 +144,7 @@ export function Navbar() {
   const MobileNavLinks = () => (
     <>
         <Link href="/" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/" ? "text-white" : "text-primary-foreground/60")}>Home</Link>
+        <Link href="/cruises" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname.startsWith("/cruises") ? "text-white" : "text-primary-foreground/60")}>Cruises</Link>
         <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="ships" className="border-b-0">
                 <AccordionTrigger className={cn("py-2 text-lg font-medium hover:no-underline", pathname.startsWith("/ships") ? "text-white" : "text-primary-foreground/60")}>Ships</AccordionTrigger>
