@@ -122,6 +122,12 @@ export function Navbar() {
       >
         Cookie Policy
       </Link>
+      <Link
+        href="/contact"
+        className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-accent/90"
+      >
+        Talk To Me Today
+      </Link>
     </>
   );
 
@@ -144,6 +150,7 @@ export function Navbar() {
         <Link href="/terms" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/terms" ? "text-white" : "text-primary-foreground/60")}>Terms & Conditions</Link>
         <Link href="/privacy" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/privacy" ? "text-white" : "text-primary-foreground/60")}>Privacy Policy</Link>
         <Link href="/cookies" onClick={handleLinkClick} className={cn("block py-2 text-lg font-medium", pathname === "/cookies" ? "text-white" : "text-primary-foreground/60")}>Cookie Policy</Link>
+        <Link href="/contact" onClick={handleLinkClick} className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-accent/90">Talk To Me Today</Link>
     </>
   );
 

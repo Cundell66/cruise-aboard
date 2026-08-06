@@ -3,8 +3,9 @@ export const dynamic = 'force-dynamic';
 
 import fs from 'fs';
 import path from 'path';
+import matter from 'gray-matter';
 import { type CruiseOffer } from "@/components/offer-card";
-import { LandingPageClient } from '@/components/landing-page-client';
+import { LandingPageClient, type ArticlePreview } from '@/components/landing-page-client';
 import { FaqItem } from '@/components/faq-section';
 
 interface FeaturedCruiseInfo {
@@ -116,6 +117,7 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
           ship: cruise.ship_title || '',
           destination: cruise.name || 'Various',
           departureDates: new Date(cruise.starts_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) || 'Date TBC',
+          nights: cruise.cruise_nights ? Number(cruise.cruise_nights) : 0,
         };
       });
 
@@ -156,6 +158,29 @@ async function getCruiseData(): Promise<{ featuredCruises: CruiseOffer[], allCru
 }
 
 
+async function getArticles(): Promise<ArticlePreview[]> {
+  try {
+    const dir = path.join(process.cwd(), 'content', 'articles');
+    const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md'));
+    const articles: ArticlePreview[] = files.map((file) => {
+      const raw = fs.readFileSync(path.join(dir, file), 'utf-8');
+      const { data } = matter(raw);
+      return {
+        slug: data.slug || file.replace(/\.md$/, ''),
+        title: data.title || '',
+        date: data.date || '',
+        excerpt: data.excerpt || '',
+        imageUrl: data.imageUrl || '',
+      };
+    });
+    articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return articles;
+  } catch (error) {
+    console.error('Failed to read articles:', error);
+    return [];
+  }
+}
+
 export default async function LandingPage() {
   const { featuredCruises, allCruises } = await getCruiseData();
 
@@ -163,6 +188,7 @@ export default async function LandingPage() {
   const faqJsonData = fs.readFileSync(faqFilePath, 'utf-8');
   const faqItems: FaqItem[] = JSON.parse(faqJsonData).faqs;
 
+  const articles = await getArticles();
 
-  return <LandingPageClient featuredCruises={featuredCruises} allCruises={allCruises} faqItems={faqItems} />;
+  return <LandingPageClient featuredCruises={featuredCruises} allCruises={allCruises} faqItems={faqItems} articles={articles} />;
 }

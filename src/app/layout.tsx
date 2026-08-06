@@ -9,8 +9,8 @@ import { CookieConsentBanner } from '@/components/cookie-consent-banner';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Cruise Aboard - MSC Cruises From Southampton',
-  description: 'Premium personal service for your dream MSC cruise. Browsable itineraries, honest advice and quotes with no jargon - from Charlie at Cruise Aboard.',
+  title: 'Cruise Aboard - Your cruise, handled by Charlie.',
+  description: "No call centres. No faceless booking sites. Just Charlie, a real person who finds you the right MSC cruise from Southampton, answers every question and handles the details so you don't have to.",
 };
 
 export default function RootLayout({

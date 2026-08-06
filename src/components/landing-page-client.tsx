@@ -1,13 +1,13 @@
-
 "use client";
 
 import { useState, useRef, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { SuggestAlternativeCruisesOutput } from "@/ai/flows/suggest-alternative-cruises";
 import { EnquiryForm } from "@/components/enquiry-form";
 import { CruiseSuggestions } from "@/components/cruise-suggestions";
 import { submitEnquiry } from "@/app/actions";
-import { Anchor, Ship, Filter, XCircle } from "lucide-react";
+import { Anchor, Ship, Filter, XCircle, Users, Facebook, Mail, CheckCircle, Star } from "lucide-react";
 import type { EnquiryFormValues } from "@/components/enquiry-form";
 import { OfferCard, type CruiseOffer } from "@/components/offer-card";
 import { FaqSection, type FaqItem } from "@/components/faq-section";
@@ -16,6 +16,7 @@ import { TestimonialsSection } from "./testimonials-section";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { SITE_CONFIG, CONTACT_LINKS } from "@/lib/site-config";
 import {
   Carousel,
   CarouselContent,
@@ -23,6 +24,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+
+export interface ArticlePreview {
+  slug: string;
+  title: string;
+  date: string;
+  excerpt: string;
+  imageUrl: string;
+}
 
 const videos = [
    {
@@ -43,9 +52,10 @@ interface LandingPageClientProps {
     featuredCruises: CruiseOffer[];
     allCruises: CruiseOffer[];
     faqItems: FaqItem[];
+    articles: ArticlePreview[];
 }
 
-export function LandingPageClient({ featuredCruises, allCruises, faqItems }: LandingPageClientProps) {
+export function LandingPageClient({ featuredCruises, allCruises, faqItems, articles }: LandingPageClientProps) {
   const [submissionState, setSubmissionState] = useState<SuggestAlternativeCruisesOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +63,8 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
   
   const [monthFilter, setMonthFilter] = useState('all');
   const [shipFilter, setShipFilter] = useState('all');
+  const [destinationFilter, setDestinationFilter] = useState('all');
+  const [durationFilter, setDurationFilter] = useState('all');
 
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -102,74 +114,203 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
         
         const monthMatch = monthFilter === 'all' || cruiseMonthYear === monthFilter;
         const shipMatch = shipFilter === 'all' || cruise.ship === shipFilter;
+        const destMatch = destinationFilter === 'all' || (cruise.destination || '').toLowerCase().includes(destinationFilter);
+        const durationMatch = durationFilter === 'all'
+          || (durationFilter === '3-5' && cruise.nights && cruise.nights >= 3 && cruise.nights <= 5)
+          || (durationFilter === '6-9' && cruise.nights && cruise.nights >= 6 && cruise.nights <= 9)
+          || (durationFilter === '10+' && cruise.nights && cruise.nights >= 10);
 
-        return monthMatch && shipMatch;
+        return monthMatch && shipMatch && destMatch && durationMatch;
     });
-  }, [allCruises, monthFilter, shipFilter]);
+  }, [allCruises, monthFilter, shipFilter, destinationFilter, durationFilter]);
     
   const handleClearFilters = () => {
     setMonthFilter('all');
     setShipFilter('all');
+    setDestinationFilter('all');
+    setDurationFilter('all');
+  };
+
+  const hasActiveFilters = monthFilter !== 'all' || shipFilter !== 'all' || destinationFilter !== 'all' || durationFilter !== 'all';
+
+  const scrollToOffers = () => {
+    document.getElementById('all-offers')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleSearch = () => {
+    scrollToOffers();
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen w-full bg-background text-foreground">
+    <div className="flex flex-col min-h-screen w-full bg-background text-foreground">
+
+      {/* ===== HERO ===== */}
+      <section className="relative w-full min-h-[560px] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/hero.jpg"
+            alt="MSC Virtuosa in Geirangerfjord, Norway"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/60 to-transparent" />
+        </div>
+        <div className="relative container mx-auto px-4 md:px-6 py-24 md:py-32 text-primary-foreground">
+          <p className="text-accent font-headline font-semibold tracking-widest uppercase text-sm mb-4">
+            Cruise Aboard
+          </p>
+          <h1 className="font-headline text-4xl md:text-6xl font-bold max-w-2xl leading-tight mb-5">
+            Your cruise, handled by Charlie.
+          </h1>
+          <p className="text-lg md:text-xl max-w-xl mb-8 text-primary-foreground/90">
+            No call centres. No faceless booking sites. Just Charlie, a real person who finds you the right cruise, answers every question and handles the details so you don't have to.
+          </p>
+          <Button
+            size="lg"
+            onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            className="bg-accent text-white font-bold text-lg px-8 py-6 h-auto hover:bg-accent/90"
+          >
+            Talk To Me Today
+          </Button>
+        </div>
+      </section>
+
       <main className="w-full max-w-7xl mx-auto p-4 md:p-8 flex-grow">
-        <header className="text-center mb-8">
-          <div className="flex justify-center items-center gap-4 mb-2">
-            <Image
-              src="/cruise-aboard-logo.png"
-              alt="Cruise Aboard Logo"
-              width={72}
-              height={72}
-              className="rounded-md"
-            />
-          </div>
-          <p className="font-headline text-2xl md:text-3xl font-semibold text-primary/90 mb-2">
-            MSC cruises from Southampton, sorted properly.
-          </p>
-          <p className="font-body text-lg text-muted-foreground max-w-2xl mx-auto">
-            I'm Charlie — one person, no call centres. Browse the cruises below,
-            then ask me for a quote. I'll find you the right ship, the right
-            cabin and the right price.
-          </p>
-        </header>
 
-        <div className="mb-12 max-w-3xl mx-auto text-2xl text-muted-foreground text-center font-headline">
-          {/* <strong>Cruise Week - An EXTRA 5% Off All Listed Prices</strong>
-          <img src="/cruise-week.jpg" alt="Cruise Week Monday 15 - Sunday 21 September 2025" /> */}
-            <Carousel className="w-full">
-              <CarouselContent>
-                {videos.map((video, index) => (
-                  <CarouselItem key={index}>
-                    <div className="p-1">
-                      <Card>
-                        <CardContent className="relative flex flex-col aspect-video items-center justify-center p-0 rounded-lg overflow-hidden">
-                           <div className="absolute top-0 left-0 w-full z-10 p-4 bg-gradient-to-b from-black/60 to-transparent">
-                             <h3 className="font-headline text-2xl font-bold text-white text-center">{video.ship}</h3>
-                           </div>
-                           <iframe
-                             src={video.src}
-                             className="absolute top-0 left-0 w-full h-full border-0"
-                             allow="autoplay; fullscreen"
-                             allowFullScreen
-                             referrerPolicy="no-referrer"
-                           ></iframe>
-                         </CardContent>
-                      </Card>
-                    </div>
-                  </CarouselItem>
+        {/* ===== SEARCH STRIP ===== */}
+        <section className="-mt-10 relative z-10 mb-12">
+          <Card className="border shadow-xl bg-card">
+            <CardContent className="p-5 md:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wide text-primary mb-1 block">Destination</label>
+                  <Select value={destinationFilter} onValueChange={setDestinationFilter}>
+                    <SelectTrigger className="w-full"><SelectValue placeholder="Where to?" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Anywhere</SelectItem>
+                      <SelectItem value="mediterranean">Mediterranean</SelectItem>
+                      <SelectItem value="norway">Norwegian Fjords</SelectItem>
+                      <SelectItem value="northern europe">Northern Europe</SelectItem>
+                      <SelectItem value="canary">Canaries</SelectItem>
+                      <SelectItem value="world">World Cruises</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wide text-primary mb-1 block">Date</label>
+                  <Select value={monthFilter} onValueChange={setMonthFilter}>
+                    <SelectTrigger className="w-full"><SelectValue placeholder="When?" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Any time</SelectItem>
+                      {availableMonths.map(month => (
+                        <SelectItem key={month} value={month}>{month}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wide text-primary mb-1 block">Duration</label>
+                  <Select value={durationFilter} onValueChange={setDurationFilter}>
+                    <SelectTrigger className="w-full"><SelectValue placeholder="How long?" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Any length</SelectItem>
+                      <SelectItem value="3-5">3-5 nights</SelectItem>
+                      <SelectItem value="6-9">6-9 nights</SelectItem>
+                      <SelectItem value="10+">10+ nights</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold uppercase tracking-wide text-primary mb-1 block">Stateroom</label>
+                  <Select>
+                    <SelectTrigger className="w-full"><SelectValue placeholder="Any cabin" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="any">Any cabin</SelectItem>
+                      <SelectItem value="inside">Inside</SelectItem>
+                      <SelectItem value="ocean">Ocean View</SelectItem>
+                      <SelectItem value="balcony">Balcony</SelectItem>
+                      <SelectItem value="suite">Suite</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button onClick={handleSearch} size="lg" className="w-full bg-primary text-white font-bold hover:bg-primary/90 h-11">
+                  <SearchIcon /> Search cruises
+                </Button>
+              </div>
+              <p className="mt-4 text-sm text-muted-foreground italic">
+                Don't see what you're after? <span className="text-primary font-medium">I can find any cruise on any ship. Just ask.</span>
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* ===== ABOUT CHARLIE ===== */}
+        <section id="about" className="mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            <div>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary/90 mb-6">
+                A few words about Charlie
+              </h2>
+              <div className="space-y-4 text-lg text-foreground/90">
+                <p>
+                  I'm Charlie, and I run Cruise Aboard from the place I love most: my Facebook group of <strong>{SITE_CONFIG.groupMembers} MSC cruisers</strong> (and counting), where I've spent years helping people plan the holidays they actually want.
+                </p>
+                <p>
+                  I don't do call centres or scripts. When you talk to me, you get me. From your first question to the moment you step back on the gangway. I've helped hundreds of families, couples and groups book their cruises, and I'll be honest with you about what's worth your money and what isn't.
+                </p>
+                <p>
+                  Parking sorted. Voyager Club discounts applied. Cabin questions answered. Shore excursions suggested. I'll handle the lot. You just pack the suncream.
+                </p>
+              </div>
+              <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-card border rounded-lg p-4 text-center shadow-sm">
+                  <p className="font-headline text-2xl font-bold text-primary">{SITE_CONFIG.groupMembers}</p>
+                  <p className="text-xs text-muted-foreground mt-1">group members</p>
+                </div>
+                <div className="bg-card border rounded-lg p-4 text-center shadow-sm">
+                  <p className="font-headline text-2xl font-bold text-primary">100s</p>
+                  <p className="text-xs text-muted-foreground mt-1">of cruises booked</p>
+                </div>
+                <div className="bg-card border rounded-lg p-4 text-center shadow-sm">
+                  <p className="font-headline text-2xl font-bold text-primary">5-star</p>
+                  <p className="text-xs text-muted-foreground mt-1">personal service</p>
+                </div>
+                <div className="bg-card border rounded-lg p-4 text-center shadow-sm">
+                  <p className="font-headline text-2xl font-bold text-primary">ATOL</p>
+                  <p className="text-xs text-muted-foreground mt-1">protected booking</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-secondary/50 border rounded-xl p-8">
+              <h3 className="font-headline text-2xl font-bold text-primary mb-4">Why book with Charlie?</h3>
+              <ul className="space-y-4">
+                {[
+                  "Real prices, checked for you",
+                  "Voyager Club discounts applied",
+                  "Parking sorted for you",
+                  "Honest advice on what's worth it",
+                  "ATOL-protected booking",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-accent mt-0.5 shrink-0" />
+                    <span className="text-foreground/90">{item}</span>
+                  </li>
                 ))}
-              </CarouselContent>
-              <CarouselPrevious className="hidden sm:flex" />
-              <CarouselNext className="hidden sm:flex" />
-            </Carousel>
+              </ul>
+              <Link href="/about" className="inline-block mt-6 font-semibold text-primary hover:text-primary/70">
+                More about Charlie →
+              </Link>
+            </div>
           </div>
+        </section>
 
+        {/* ===== FEATURED CRUISES ===== */}
         {featuredCruises.length > 0 && (
           <section id="featured-offers" className="mb-16">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">Featured Offers</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">This month's featured cruises</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {featuredCruises.map(offer => (
                   <OfferCard key={offer.id} offer={offer} onRequestQuote={handleRequestQuote} />
                 ))}
@@ -177,7 +318,8 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
           </section>
         )}
 
-        <section id="all-offers" className="mb-12">
+        {/* ===== ALL OFFERS ===== */}
+        <section id="all-offers" className="mb-12 scroll-mt-24">
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">All MSC Cruises from Southampton</h2>
             
             <div className="bg-card p-4 rounded-lg border shadow-sm mb-8 flex flex-col md:flex-row items-center gap-4">
@@ -210,7 +352,7 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
                         </SelectContent>
                     </Select>
                 </div>
-                {(monthFilter !== 'all' || shipFilter !== 'all') && (
+                {hasActiveFilters && (
                     <Button variant="ghost" onClick={handleClearFilters} className="text-muted-foreground hover:text-foreground">
                         <XCircle className="w-4 h-4 mr-2" />
                         Clear Filters
@@ -225,13 +367,15 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
                 ))
               ) : (
                 <div className="md:col-span-2 lg:col-span-3 text-center py-10">
-                    <p className="text-lg text-muted-foreground">No cruises match your selected filters.</p>
+                    <p className="text-lg text-muted-foreground mb-4">No cruises match your selected filters.</p>
+                    <Button variant="outline" onClick={handleClearFilters}>Clear Filters</Button>
                 </div>
               )}
             </div>
         </section>
 
-        <div ref={formRef} className="w-full max-w-2xl mx-auto scroll-mt-20 mb-16">
+        {/* ===== ENQUIRY FORM ===== */}
+        <div ref={formRef} id="quote" className="w-full max-w-2xl mx-auto scroll-mt-20 mb-16">
           {submissionState ? (
             <CruiseSuggestions suggestions={submissionState.suggestions} />
           ) : (
@@ -245,11 +389,106 @@ export function LandingPageClient({ featuredCruises, allCruises, faqItems }: Lan
           )}
         </div>
 
+        {/* ===== SHIP VIDEOS ===== */}
+        <section id="ships" className="mb-16">
+          <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary/90 mb-8">Take a look on board</h2>
+          <Carousel className="w-full">
+            <CarouselContent>
+              {videos.map((video, index) => (
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                  <div className="p-1">
+                    <Card>
+                      <CardContent className="relative flex flex-col aspect-video items-center justify-center p-0 rounded-lg overflow-hidden">
+                         <div className="absolute top-0 left-0 w-full z-10 p-4 bg-gradient-to-b from-black/60 to-transparent">
+                           <h3 className="font-headline text-2xl font-bold text-white text-center">{video.ship}</h3>
+                         </div>
+                         <iframe
+                           src={video.src}
+                           className="absolute top-0 left-0 w-full h-full border-0"
+                           allow="autoplay; fullscreen"
+                           allowFullScreen
+                           referrerPolicy="no-referrer"
+                         ></iframe>
+                       </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden sm:flex" />
+            <CarouselNext className="hidden sm:flex" />
+          </Carousel>
+        </section>
+
+        {/* ===== SOCIALS ===== */}
+        <section id="community" className="mb-16 text-center bg-secondary/40 border rounded-xl p-10">
+          <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary/90 mb-4">Join the community</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+            Join <strong className="text-primary">{SITE_CONFIG.groupMembers} cruisers</strong> who've already found their man in the group.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Button asChild size="lg" className="bg-primary text-white font-bold hover:bg-primary/90">
+              <a href={SITE_CONFIG.facebookGroup || CONTACT_LINKS.messengerHref} target="_blank" rel="noopener noreferrer">
+                <Facebook className="w-5 h-5 mr-2" /> Join our Facebook group
+              </a>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="font-bold">
+              <a href={CONTACT_LINKS.messengerHref} target="_blank" rel="noopener noreferrer">
+                <Mail className="w-5 h-5 mr-2" /> Message Charlie
+              </a>
+            </Button>
+          </div>
+        </section>
+
         <InclusionsSection />
         <TestimonialsSection />
+
+        {/* ===== NEWS / BLOG ===== */}
+        {articles.length > 0 && (
+          <section id="news" className="mb-16">
+            <div className="text-center mb-10">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary/90 mb-3">Cruise tips &amp; news</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Everything you need to know before you sail.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {articles.slice(0, 3).map((article) => (
+                <Link key={article.slug} href={`/articles/${article.slug}`} className="block group">
+                  <Card className="h-full overflow-hidden shadow-sm hover:shadow-primary/20 transition-all duration-300 group-hover:border-primary/40">
+                    <div className="relative w-full h-44">
+                      <Image
+                        src={article.imageUrl}
+                        alt={article.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover"
+                      />
+                    </div>
+                    <CardContent className="p-5">
+                      <h3 className="font-headline text-lg font-semibold mb-2 group-hover:text-primary transition-colors">{article.title}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-3">{article.excerpt}</p>
+                      <span className="inline-block mt-3 font-semibold text-sm text-primary">Read more ›</span>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+            <div className="text-center mt-8">
+              <Button asChild variant="outline" size="lg" className="font-bold">
+                <Link href="/articles">Read the blog</Link>
+              </Button>
+            </div>
+          </section>
+        )}
+
         <FaqSection items={faqItems} />
 
       </main>
     </div>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
   );
 }

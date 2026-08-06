@@ -10,7 +10,7 @@ export default function ContactPage() {
         Get in touch
       </h1>
       <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
-        The quickest way to reach Charlie is WhatsApp or Messenger — that's where
+        The quickest way to reach Charlie is WhatsApp or Messenger. That's where
         most customers message anyway. Prefer email? The form on the homepage
         works too, or drop us a line below.
       </p>
@@ -83,7 +83,7 @@ export default function ContactPage() {
         <CardContent className="text-muted-foreground">
           <p>
             Cruise Aboard is based in the UK, sailing mainly from Southampton.
-            You won't find a high-street shop — nearly all our customers come
+            You won't find a high-street shop. Nearly all our customers come
             through the <strong>{SITE_CONFIG.groupMembers}-member</strong> MSC Cruises
             UK Forum Facebook group and word of mouth. That's how we like it:
             one person, one phone, no call centres.

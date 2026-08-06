@@ -10,7 +10,7 @@ export default function AboutPage() {
       </h1>
       <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
         Cruise Aboard is one person: me. That's the point. When you book with me,
-        you get the same person every time — no call centres, no hand-offs, no
+        you get the same person every time. No call centres, no hand-offs, no
         chasing.
       </p>
 
@@ -22,14 +22,14 @@ export default function AboutPage() {
         </CardHeader>
         <CardContent className="space-y-4 text-muted-foreground">
           <p>
-            I run <strong>Cruise Aboard</strong> — MSC cruises from Southampton,
+            I run <strong>Cruise Aboard</strong>, MSC cruises from Southampton,
             and a handful of fly-cruises when the right one comes up. I'm a
             specialist, not a supermarket: 99% of what I book is MSC, so I know
             the ships, the cabins and the quirks better than anyone on a general
             travel website.
           </p>
           <p>
-            You might know me as <strong>Charlie</strong> — that's what customers
+            You might know me as <strong>Charlie</strong>. That's what customers
             call me, that's how I sign my emails, and that's how you'll get me.
           </p>
         </CardContent>
@@ -44,7 +44,7 @@ export default function AboutPage() {
           </CardHeader>
           <CardContent className="text-muted-foreground">
             <p className="text-3xl font-bold text-primary font-headline">{SITE_CONFIG.groupMembers}</p>
-            <p className="mt-1">members in my MSC Cruises UK Forum Facebook group — one of the UK's biggest.</p>
+            <p className="mt-1">members in my MSC Cruises UK Forum Facebook group, one of the UK's biggest.</p>
           </CardContent>
         </Card>
         <Card>
@@ -55,7 +55,7 @@ export default function AboutPage() {
           </CardHeader>
           <CardContent className="text-muted-foreground">
             <p className="text-3xl font-bold text-primary font-headline">{SITE_CONFIG.bookingsThisYear}</p>
-            <p className="mt-1">cruises booked this year — and counting. Mostly people who found me through the group.</p>
+            <p className="mt-1">cruises booked this year, and counting. Mostly people who found me through the group.</p>
           </CardContent>
         </Card>
         <Card>
@@ -79,8 +79,8 @@ export default function AboutPage() {
         </CardHeader>
         <CardContent className="space-y-3 text-muted-foreground">
           <p>1. <strong>One person, start to finish.</strong> I quote, I book, I sort the parking, I'm there on the day.</p>
-          <p>2. <strong>Real MSC knowledge.</strong> The best cabins, the deck quirks, the Voyager Club tricks — I know them, and I'll tell you honestly.</p>
-          <p>3. <strong>No price games.</strong> You'll see lead-in prices on the site, and I'll always tell you what the real deal is before you commit — including when booking direct with MSC genuinely makes more sense.</p>
+          <p>2. <strong>Real MSC knowledge.</strong> The best cabins, the deck quirks, the Voyager Club tricks. I know them, and I'll tell you honestly.</p>
+          <p>3. <strong>No price games.</strong> You'll see lead-in prices on the site, and I'll always tell you what the real deal is before you commit, including when booking direct with MSC genuinely makes more sense.</p>
           <p>4. <strong>Stress-free by design.</strong> Big family booking with three cabins and granny in tow? That's exactly the sort of thing I sort out every week.</p>
         </CardContent>
       </Card>

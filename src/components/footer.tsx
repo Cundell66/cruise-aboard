@@ -1,4 +1,3 @@
-
 export function Footer() {
   return (
     <footer className="w-full text-center p-4 mt-8 border-t-4 text-sm text-muted-foreground">
@@ -10,6 +9,9 @@ export function Footer() {
       <p> Cruise Aboard is an affiliate for Not Just Travel, who are a trading division of Hays Travel Limited. </p>
       <p> Registered address: Gilbridge House, Keel Square, Sunderland, SR1 3HA.</p>
       <p> Registered Company Number: 1990682. ABTA no. K9413.</p>
+      <p className="mt-3 text-xs text-muted-foreground/70">
+        Hero photo: MSC Virtuosa in Geirangerfjord by Virtual-Pano, CC BY-SA 4.0, via Wikimedia Commons.
+      </p>
     </footer>
   );
 }
