@@ -19,9 +19,10 @@ function cleanDestinations(destination: string): string {
 export function FeaturedCruiseCard({ offer, onRequestQuote }: FeaturedCruiseCardProps) {
   const region = offer.regions?.[0] || "Northern Europe";
   const destinations = cleanDestinations(offer.destination);
-  // Prefer the admin-set offer price (discountedPrice = offerPrice for featured
-  // cruises) over the live feed inside price, so Connor's advertised price shows.
-  const insidePrice = offer.discountedPrice || offer.insidePrice;
+  // Inside/balcony prices are resolved in cruises.ts for featured cruises:
+  // admin per-cabin price wins, then the admin offer price (inside box), then
+  // the live feed price. These fallbacks keep the card safe regardless.
+  const insidePrice = offer.insidePrice ?? offer.discountedPrice;
   const balconyPrice = offer.balconyPrice;
 
   return (

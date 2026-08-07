@@ -82,7 +82,9 @@ collections:
             fields:
               - { label: "Vendor ID", name: "vendor_id", widget: "string", hint: "Internal ID from the cruise feed, e.g. MR20270529SOUSOU" }
               - { label: "Drinks", name: "drinks", widget: "select", options: ["included", "available"] }
-              - { label: "Offer Price", name: "offerPrice", widget: "number", hint: "Our price in GBP per person" }
+              - { label: "Offer Price", name: "offerPrice", widget: "number", hint: "Our price in GBP per person. Used for the inside cabin unless Inside Price is set." }
+              - { label: "Inside Price (optional)", name: "insidePrice", widget: "number", required: false, hint: "Overrides the inside cabin price on the hero card. Leave blank to use Offer Price, or the live feed price." }
+              - { label: "Balcony Price (optional)", name: "balconyPrice", widget: "number", required: false, hint: "Overrides the balcony cabin price on the hero card. Leave blank to use the live feed price." }
               - { label: "Comments", name: "comments", widget: "text" }
               - { label: "Blurb (hero card tagline)", name: "blurb", widget: "text", required: false, hint: "Shown on the big featured card, e.g. A perfect taster: dip your toe in the water without a fortnight's commitment." }
 

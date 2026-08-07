@@ -8,6 +8,8 @@ interface FeaturedCruiseInfo {
   drinks?: 'included' | 'available';
   comments?: string;
   blurb?: string;
+  insidePrice?: number;
+  balconyPrice?: number;
 }
 
 interface ItineraryInfo {
@@ -40,7 +42,7 @@ export async function getCruiseData(): Promise<CruiseData> {
   const featuredCruisesFilePath = path.join(process.cwd(), 'content', 'featured-cruises.json');
   const featuredCruisesJsonData = fs.readFileSync(featuredCruisesFilePath, 'utf-8');
   const featuredCruisesData = JSON.parse(featuredCruisesJsonData);
-  const featuredCruiseMap = new Map<string, { offerPrice: number; drinks?: 'included' | 'available'; comments?: string; blurb?: string }>(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks, comments: item.comments, blurb: item.blurb }]));
+  const featuredCruiseMap = new Map<string, { offerPrice: number; drinks?: 'included' | 'available'; comments?: string; blurb?: string; insidePrice?: number; balconyPrice?: number }>(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => [item.vendor_id, { offerPrice: item.offerPrice, drinks: item.drinks, comments: item.comments, blurb: item.blurb, insidePrice: item.insidePrice, balconyPrice: item.balconyPrice }]));
   const featuredVendorIds = new Set(featuredCruisesData.featured.map((item: FeaturedCruiseInfo) => item.vendor_id));
 
   // Read site settings (editable via Decap CMS)
@@ -144,6 +146,12 @@ export async function getCruiseData(): Promise<CruiseData> {
           const featuredCruise = { ...cruise, details: [...cruise.details] };
           
           featuredCruise.discountedPrice = featuredInfo.offerPrice;
+
+          // Per-cabin price overrides (admin panel): explicit inside/balcony price
+          // wins, then the offer price (inside box), then the live feed price.
+          if (featuredInfo.insidePrice) featuredCruise.insidePrice = featuredInfo.insidePrice;
+          else if (featuredInfo.offerPrice) featuredCruise.insidePrice = featuredInfo.offerPrice;
+          if (featuredInfo.balconyPrice) featuredCruise.balconyPrice = featuredInfo.balconyPrice;
           const drinksIncluded = featuredInfo.drinks === 'included';
           featuredCruise.drinksIncluded = drinksIncluded;
           
