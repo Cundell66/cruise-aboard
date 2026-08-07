@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShipStats } from "@/components/ship-stats";
 import { Ship, Users, BedDouble, UserCog, Gauge, Ruler, Weight } from "lucide-react";
+import { DeckplanSection } from "@/components/deckplan-section";
 
-// TODO(Connor): replace with the MSC Meraviglia video embed URL when provided
 const video = {
   ship: 'MSC Meraviglia',
-  src: '', // e.g. 'https://iframe.mediadelivery.net/embed/58732/<id>?autoplay=true&loop=true&muted=true&preload=true&responsive=true'
+  src: '/msc-meraviglia-ship-tour.mp4',
 };
 
 const shipStats = [
@@ -29,21 +29,15 @@ export default function MscMeravigliaPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-secondary/40">
-            {video.src ? (
-              <iframe
-                src={video.src}
-                className="absolute top-0 left-0 h-full w-full border-0"
-                allow="autoplay; fullscreen"
-                allowFullScreen
-                referrerPolicy="no-referrer"
-              ></iframe>
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <p className="font-headline text-xl font-semibold text-muted-foreground">
-                  Ship video coming soon
-                </p>
-              </div>
-            )}
+            <video
+              src={video.src}
+              className="absolute top-0 left-0 h-full w-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+            ></video>
           </div>
            <div className="text-muted-foreground space-y-4">
             <h2 className="font-headline text-2xl font-semibold text-primary/90 mt-6">About the Ship</h2>
@@ -59,6 +53,7 @@ export default function MscMeravigliaPage() {
             subtitle="Discover how many details make your experience so great."
             stats={shipStats}
           />
+          <DeckplanSection pdfUrl="/msc-meraviglia-deckplan.pdf" />
         </CardContent>
       </Card>
 
