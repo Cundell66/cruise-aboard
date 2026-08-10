@@ -43,7 +43,7 @@ const videos = [
     },
     {
       ship: 'MSC Meraviglia',
-      src: '', // TODO(Connor): Meraviglia video URL to follow
+      src: '/msc-meraviglia-ship-tour.mp4',
     },
     {
       ship: 'MSC Preziosa',
@@ -310,13 +310,25 @@ export function LandingPageClient({ featuredCruises, faqItems, articles, filterO
                            <h3 className="font-headline text-2xl font-bold text-white text-center">{video.ship}</h3>
                          </div>
                          {video.src ? (
-                           <iframe
-                             src={video.src}
-                             className="absolute top-0 left-0 w-full h-full border-0"
-                             allow="autoplay; fullscreen"
-                             allowFullScreen
-                             referrerPolicy="no-referrer"
-                           ></iframe>
+                           video.src.endsWith('.mp4') ? (
+                             <video
+                               src={video.src}
+                               className="absolute top-0 left-0 w-full h-full object-cover"
+                               autoPlay
+                               loop
+                               muted
+                               playsInline
+                               preload="metadata"
+                             ></video>
+                           ) : (
+                             <iframe
+                               src={video.src}
+                               className="absolute top-0 left-0 w-full h-full border-0"
+                               allow="autoplay; fullscreen"
+                               allowFullScreen
+                               referrerPolicy="no-referrer"
+                             ></iframe>
+                           )
                          ) : (
                            <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
                              <p className="font-headline text-lg font-semibold text-muted-foreground">Video coming soon</p>
