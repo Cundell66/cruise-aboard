@@ -99,7 +99,7 @@ export function EnquiryForm({ onSubmit, isLoading, serverError, initialData }: E
   };
 
   const whatsappHref = `https://wa.me/${SITE_CONFIG.whatsapp}?text=${encodeURIComponent(buildQuoteMessage())}`;
-  const messengerHref = `https://m.me/${SITE_CONFIG.facebookPage}?text=${encodeURIComponent(buildQuoteMessage())}`;
+  const messengerHref = `https://www.messenger.com/t/${SITE_CONFIG.facebookPage}/?text=${encodeURIComponent(buildQuoteMessage())}`;
 
   return (
     <Card className="w-full border-primary/20 shadow-lg">
