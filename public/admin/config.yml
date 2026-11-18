@@ -35,7 +35,10 @@ collections:
       - { label: "Author", name: "author", widget: "string" }
       - { label: "Date", name: "date", widget: "datetime" }
       - { label: "Excerpt", name: "excerpt", widget: "text" }
-      - { label: "Image URL", name: "imageUrl", widget: "string" }
+      - label: "Featured image"
+        name: "imageUrl"
+        widget: "image"
+        hint: "Upload or choose an image. Landscape, about 1600x900 (16:9). Avoid pasting links from cruise line websites - they block other sites from displaying their images."
       - { label: "Image Alt Text", name: "imageAlt", widget: "string" }
       - { label: "Image Hint", name: "imageHint", widget: "string", required: false }
       - { label: "Body", name: "body", widget: "markdown" }

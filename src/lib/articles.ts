@@ -23,6 +23,39 @@ export interface Article {
 
 const articlesDir = path.join(process.cwd(), 'content', 'articles');
 
+/** Hosts next.config.ts allows next/image to optimise. */
+const ALLOWED_IMAGE_HOSTS = new Set([
+  'placehold.co',
+  'picsum.photos',
+  'm.simplycruises.com',
+  'www.msccruises.co.uk',
+  'www.widgety.co.uk',
+]);
+
+/** Used when a post has no usable image, so the layout never collapses. */
+export const FALLBACK_ARTICLE_IMAGE = '/cruise-week.jpg';
+
+/**
+ * Posts written in the CMS sometimes carry a hotlinked image. Two things break
+ * that: hosts missing from next.config remotePatterns (next/image refuses), and
+ * cruise lines blocking hotlinks outright. Normalise to something renderable.
+ */
+function resolveImage(url: string): string {
+  const value = (url || '').trim();
+  if (!value) return FALLBACK_ARTICLE_IMAGE;
+  if (value.startsWith('/')) return value;
+
+  try {
+    const parsed = new URL(value);
+    if (parsed.protocol === 'https:' && ALLOWED_IMAGE_HOSTS.has(parsed.hostname)) return value;
+  } catch {
+    return FALLBACK_ARTICLE_IMAGE;
+  }
+
+  console.warn(`Article image host not allowed, using fallback: ${value}`);
+  return FALLBACK_ARTICLE_IMAGE;
+}
+
 function fileSlug(file: string): string {
   return file.replace(/\.md$/, '');
 }
@@ -48,8 +81,8 @@ function toArticle(data: Record<string, unknown>, content: string, file: string)
     author: (data.author as string) || '',
     date: (data.date as string) || '',
     excerpt: (data.excerpt as string) || '',
-    imageUrl: (data.imageUrl as string) || '',
-    imageAlt: (data.imageAlt as string) || '',
+    imageUrl: resolveImage((data.imageUrl as string) || ''),
+    imageAlt: (data.imageAlt as string) || (data.title as string) || '',
     imageHint: (data.imageHint as string) || '',
     content,
   };
