@@ -1,7 +1,4 @@
 
-import fs from 'fs/promises';
-import path from 'path';
-import matter from 'gray-matter';
 import { marked } from 'marked';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -11,57 +8,16 @@ import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-interface Article {
-  slug: string;
-  title: string;
-  author: string;
-  date: string;
-  excerpt: string;
-  imageUrl: string;
-  imageAlt: string;
-  imageHint: string;
-  content: string;
-}
+import { getArticle, getArticleSlugs } from '@/lib/articles';
 
-const articlesDir = path.join(process.cwd(), 'content', 'articles');
-
-// This function tells Next.js which slugs to pre-render at build time.
 export async function generateStaticParams() {
-  try {
-    const files = (await fs.readdir(articlesDir)).filter((f) => f.endsWith('.md'));
-    return files.map((file) => ({
-      slug: file.replace(/\.md$/, ''),
-    }));
-  } catch (error) {
-    console.error('Could not read articles for static params:', error);
-    return [];
-  }
+  const slugs = await getArticleSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
-async function getArticle(slug: string): Promise<Article | undefined> {
-  const filePath = path.join(articlesDir, `${slug}.md`);
-  try {
-    const raw = await fs.readFile(filePath, 'utf-8');
-    const { data, content } = matter(raw);
-    return {
-      slug: data.slug || slug,
-      title: data.title || '',
-      author: data.author || '',
-      date: data.date || '',
-      excerpt: data.excerpt || '',
-      imageUrl: data.imageUrl || '',
-      imageAlt: data.imageAlt || '',
-      imageHint: data.imageHint || '',
-      content,
-    };
-  } catch (error) {
-    console.error('Failed to read article:', error);
-    return undefined;
-  }
-}
-
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = await getArticle(params.slug);
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const article = await getArticle(slug);
 
   if (!article) {
     notFound();
