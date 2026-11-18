@@ -6,7 +6,7 @@ date: 2026-11-18T06:16:00.000+00:00
 excerpt: Thinking about an MSC drinks package from Southampton? Charlie compares
   Premium Extra with paying as you go, using his own MSC Virtuosa experience to
   help you choose.
-imageUrl: https://www.msccruises.no/-/media/global-contents/on-board/dining/drinks-packages/new-drinks-packages/premium-package-msc25034410.jpg?as=1&bc=transparent&hash=CB6E54A9C6762703A0A89868B01E6A30&mh=720&mw=920
+imageUrl: /images/uploads/premium-package-msc25034410.jpg
 imageAlt: Five cocktails and drinks from MSC Cruises’ Premium Extra Drinks
   Package, displayed on a table overlooking the ocean aboard an MSC cruise ship.
 ---
